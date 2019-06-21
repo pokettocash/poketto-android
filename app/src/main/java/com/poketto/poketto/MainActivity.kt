@@ -35,14 +35,8 @@ class MainActivity : AppCompatActivity() {
 
         balanceTextView = findViewById(R.id.balance)
 
-        clearCredentials()
+        val address = Wallet(this).getAddress()
 
-        var address = getAddress()
-
-        if(address == null) {
-            generate()
-            address = getAddress()
-        }
         Log.d("onCreate", "address: " + address)
 
         balanceFrom(address!!)
@@ -50,61 +44,6 @@ class MainActivity : AppCompatActivity() {
 //        send("0x3849bA8A4D7193bF550a6e04632b176F9Ce1B7e8", "0.01")
     }
 
-    private fun clearCredentials() {
-
-        val editor: SharedPreferences.Editor
-        val preferences = getSharedPreferences("user_pref", Context.MODE_PRIVATE)
-        val firstRun = preferences.getString("FirstRun", null)
-
-        if(firstRun == null) {
-            Log.d("clearCredentials", "on first run")
-            editor = preferences.edit()
-            editor.putString("FirstRun", "1strun")
-            editor.apply()
-            SecurePreferences.removeValue(this, "mnemonic")
-        }
-    }
-
-    private fun getAddress() : String? {
-
-        if(SecurePreferences.contains(this, "mnemonic")) {
-            val mnemonic = SecurePreferences.getStringValue(this, "mnemonic", null)
-            val seed = MnemonicUtils.generateSeed(mnemonic, "Poketto")
-            val credentials = Credentials.create(ECKeyPair.create(sha256(seed)))
-            val address = credentials.address
-            Log.d("getAddress", "address: " + address)
-            return address
-        } else {
-            return null
-        }
-    }
-
-    private fun generate() {
-
-        val initialEntropy = ByteArray(32)
-        val secureRandom = SecureRandom()
-        secureRandom.nextBytes(initialEntropy)
-
-        val mnemonic = MnemonicUtils.generateMnemonic(initialEntropy)
-        Log.d("generate", "mnemonic: " + mnemonic)
-
-        try {
-            SecurePreferences.setValue(this, "mnemonic", mnemonic)
-        } catch (e: SecureStorageException) {
-            handleException(e)
-        }
-    }
-
-    private fun importSeed(seed: String) : Boolean {
-
-        SecurePreferences.setValue(this, "mnemonic", seed)
-        return false
-    }
-
-    private fun exportSeed() : String? {
-
-        return SecurePreferences.getStringValue(this, "mnemonic", null)
-    }
 
     private fun balanceFrom(address: String) {
 
@@ -177,10 +116,6 @@ class MainActivity : AppCompatActivity() {
 //        )
         Log.d("send", "ethSendTransaction: " + ethSendTransaction)
         Log.d("send", "send tx receipt: " + transactionReceipt)
-    }
-
-    private fun handleException(e: SecureStorageException) {
-        Log.e("handleException", e.message)
     }
 
 }
