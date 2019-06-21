@@ -1,5 +1,6 @@
-package com.poketto.poketto
+package com.poketto.poketto.services
 
+import com.poketto.poketto.models.Transactions
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

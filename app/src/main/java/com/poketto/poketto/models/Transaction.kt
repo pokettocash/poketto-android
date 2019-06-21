@@ -1,4 +1,4 @@
-package com.poketto.poketto
+package com.poketto.poketto.models
 
 class Transaction {
 

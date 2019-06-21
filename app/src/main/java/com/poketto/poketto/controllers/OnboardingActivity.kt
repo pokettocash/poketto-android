@@ -1,4 +1,4 @@
-package com.poketto.poketto
+package com.poketto.poketto.controllers
 
 import android.content.Context
 import android.os.Bundle
@@ -11,13 +11,21 @@ import android.support.design.widget.TabLayout
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.support.v4.view.PagerAdapter
+import com.poketto.poketto.R
+import com.poketto.poketto.data.PokettoPreferenceManager
+import com.poketto.poketto.services.Wallet
 
 class OnboardingActivity: FragmentActivity() {
 
     private lateinit var mPager: ViewPager
 
     var preferenceManager: PokettoPreferenceManager? = null
-    var screens: IntArray = intArrayOf(R.layout.intro_screen1, R.layout.intro_screen2, R.layout.intro_screen3, R.layout.intro_screen4)
+    var screens: IntArray = intArrayOf(
+        R.layout.intro_screen1,
+        R.layout.intro_screen2,
+        R.layout.intro_screen3,
+        R.layout.intro_screen4
+    )
     var nextButton: Button? = null
 
 

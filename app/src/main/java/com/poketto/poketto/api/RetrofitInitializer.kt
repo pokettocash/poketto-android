@@ -1,5 +1,6 @@
-package com.poketto.poketto
+package com.poketto.poketto.api
 
+import com.poketto.poketto.services.Explorer
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

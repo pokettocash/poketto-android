@@ -1,4 +1,4 @@
-package com.poketto.poketto
+package com.poketto.poketto.controllers
 
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
@@ -6,12 +6,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import com.poketto.poketto.R
+import com.poketto.poketto.services.Wallet
 import de.adorsys.android.securestoragelibrary.SecurePreferences
-import org.web3j.crypto.Credentials
-import org.web3j.crypto.ECKeyPair
-import org.web3j.crypto.Hash
-import org.web3j.crypto.Keys.getAddress
-import org.web3j.crypto.MnemonicUtils
 
 
 class LaunchActivity: AppCompatActivity() {

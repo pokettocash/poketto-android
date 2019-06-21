@@ -1,4 +1,4 @@
-package com.poketto.poketto
+package com.poketto.poketto.data
 
 import android.content.Context
 import android.content.SharedPreferences

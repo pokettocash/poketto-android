@@ -1,17 +1,17 @@
-package com.poketto.poketto
+package com.poketto.poketto.controllers
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import java.security.SecureRandom
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.Web3j
-import android.content.Context
-import android.content.SharedPreferences
 import android.widget.TextView
+import com.poketto.poketto.R
+import com.poketto.poketto.api.RetrofitInitializer
+import com.poketto.poketto.models.Transactions
+import com.poketto.poketto.services.Wallet
 import de.adorsys.android.securestoragelibrary.SecurePreferences
-import de.adorsys.android.securestoragelibrary.SecureStorageException
 import org.web3j.crypto.*
 import org.web3j.crypto.Hash.sha256
 import java.math.BigInteger
