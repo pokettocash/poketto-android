@@ -7,7 +7,6 @@ import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.Web3j
 import android.widget.TextView
-import com.poketto.poketto.R
 import com.poketto.poketto.api.RetrofitInitializer
 import com.poketto.poketto.models.Transactions
 import com.poketto.poketto.services.Wallet
@@ -20,6 +19,8 @@ import org.web3j.crypto.TransactionEncoder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.view.Menu
+import com.poketto.poketto.R
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +34,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+//        supportActionBar!!.elevation = 0F
+
+        //setting toolbar
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar!!.elevation = 0F
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
+
         balanceTextView = findViewById(R.id.balance)
 
         val address = Wallet(this).getAddress()
@@ -42,6 +50,12 @@ class MainActivity : AppCompatActivity() {
         balanceFrom(address!!)
         transactionsFrom(address!!)
 //        send("0x3849bA8A4D7193bF550a6e04632b176F9Ce1B7e8", "0.01")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.toolbar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
 

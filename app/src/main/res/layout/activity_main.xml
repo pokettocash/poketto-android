@@ -7,6 +7,27 @@
         android:layout_height="match_parent"
         tools:context=".controllers.MainActivity">
 
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:logo="@mipmap/nav_button_settings"/>
+
+    <View
+            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#D8D8D8" />
+
     <TextView
             android:id="@+id/balance"
             android:layout_width="wrap_content"

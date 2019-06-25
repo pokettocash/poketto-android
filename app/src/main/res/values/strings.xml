@@ -5,4 +5,5 @@
     <string name="intro_3">xDai is an Ethereum blockchain that uses USD-stable xDai (a representation of DAI token) as the native coin of the network.</string>
     <string name="intro_4">Your xDai wallet will be generated for you as soon as you press get started. You can also import an existing wallet on the settings.</string>
     <string name="get_started">Get Started</string>
+    <string name="qr_code">QR code</string>
 </resources>
