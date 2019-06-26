@@ -20,6 +20,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.view.Menu
+import android.text.Spannable
+import android.text.style.ImageSpan
+import android.text.SpannableString
+import android.view.View
+import android.widget.Button
 import com.poketto.poketto.R
 
 
@@ -34,14 +39,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        supportActionBar!!.elevation = 0F
+        val requestButton = findViewById<View>(R.id.request_btn) as Button
+        val requestButtonLabel = SpannableString("   Request")
+        requestButtonLabel.setSpan(
+            ImageSpan(
+                applicationContext, R.drawable.arrow_down,
+                ImageSpan.ALIGN_BOTTOM
+            ), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        requestButton.text = requestButtonLabel
+
+        val payButton = findViewById<View>(R.id.pay_btn) as Button
+        val payButtonLabel = SpannableString("   Pay")
+        payButtonLabel.setSpan(
+            ImageSpan(
+                applicationContext, R.drawable.arrow_up,
+                ImageSpan.ALIGN_BOTTOM
+            ), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        payButton.text = payButtonLabel
 
         //setting toolbar
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar!!.elevation = 0F
         supportActionBar!!.setDisplayShowTitleEnabled(false)
 
-        balanceTextView = findViewById(R.id.balance)
+        balanceTextView = findViewById(R.id.balance_value)
 
         val address = Wallet(this).getAddress()
 
@@ -72,9 +95,11 @@ class MainActivity : AppCompatActivity() {
 
         val wei = ethGetBalance.balance
 
-        var dai = wei.toDouble() / weiToDaiRate
+        val dai = wei.toDouble() / weiToDaiRate
 
-        balanceTextView!!.text = "Balance: " + dai.toString()
+        val formattedDaiString = String.format("%.2f", dai)
+
+        balanceTextView!!.text = "$formattedDaiString xDai"
 
         Log.d("balanceFrom", "dai balance: " + dai)
     }

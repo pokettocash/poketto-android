@@ -6,4 +6,10 @@
     <string name="intro_4">Your xDai wallet will be generated for you as soon as you press get started. You can also import an existing wallet on the settings.</string>
     <string name="get_started">Get Started</string>
     <string name="qr_code">QR code</string>
+    <string name="balance">Balance</string>
+    <string name="balance_value">&#8230; xDai</string>
+    <string name="spent_today">Spent today</string>
+    <string name="spent_today_value">0.00 xDai</string>
+    <string name="request">Request</string>
+    <string name="pay">Pay</string>
 </resources>
