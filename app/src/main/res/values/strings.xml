@@ -12,4 +12,8 @@
     <string name="spent_today_value">0.00 xDai</string>
     <string name="request">Request</string>
     <string name="pay">Pay</string>
+    <string name="receive_subtitle_request_modal">Receive xDai in your wallet.</string>
+    <string name="address">0x4b2Cbe48C378CaD5A2145358440B25627F99E189</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="share">Share with others</string>
 </resources>

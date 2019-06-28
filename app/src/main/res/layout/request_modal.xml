@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+            android:id="@+id/request_title"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:text="@string/request"/>
+
+    <!--<Button-->
+            <!--android:id="@+id/dialogButtonOK"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_goneMarginTop="10dp"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Done"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:layout_marginRight="5dp"-->
+    <!--/>-->
+
+    <View
+            android:id="@+id/toolbar_divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#B3D8D8D8"
+    />
+
+    <LinearLayout
+            android:id="@+id/dashboard_header"
+            app:layout_constraintTop_toTopOf="@+id/toolbar_divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+    >
+
+        <TextView
+                android:id="@+id/request_subtitle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:textColor="#000"
+                android:textAlignment="center"
+                android:text="@string/receive_subtitle_request_modal"/>
+
+        <ImageView
+                android:id="@+id/image"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="6dp"
+                android:background="#000"/>
+
+        <TextView
+                android:id="@+id/address"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="2dp"
+                android:textColor="#99111111"
+                android:textAlignment="center"
+                android:layout_gravity="center_horizontal"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text="@string/address"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+            <ImageView
+                    android:id="@+id/copy_image"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/request_clipboard"
+                    android:layout_weight="2"/>
+
+            <TextView
+                    android:id="@+id/copy_to_clipboard"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_gravity="center_vertical|start"
+                    android:textColor="#000"
+                    android:textAlignment="textStart"
+                    android:text="@string/copy_to_clipboard"
+                    android:layout_weight="6"/>
+
+            <ImageView
+                    android:id="@+id/copy_arrow"
+                    android:layout_width="17dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:src="@drawable/settings_row_arrow"
+                    android:layout_weight="2"/>
+
+        </LinearLayout>
+
+        <View
+                android:id="@+id/copy_divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="#B3D8D8D8"
+        />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="2dp"
+                android:weightSum="10"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:layout_marginBottom="10dp">
+
+            <ImageView
+                    android:id="@+id/copy_share_image"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/request_share"
+                    android:layout_weight="2"/>
+
+            <TextView
+                    android:id="@+id/copy_share"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_gravity="center_vertical|start"
+                    android:textColor="#000"
+                    android:textAlignment="textStart"
+                    android:text="@string/share"
+                    android:layout_weight="6"/>
+
+            <ImageView
+                    android:id="@+id/share_arrow"
+                    android:layout_width="17dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:src="@drawable/settings_row_arrow"
+                    android:layout_weight="2"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

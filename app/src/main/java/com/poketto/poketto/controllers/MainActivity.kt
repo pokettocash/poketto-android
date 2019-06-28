@@ -25,6 +25,10 @@ import android.text.style.ImageSpan
 import android.text.SpannableString
 import android.view.View
 import android.widget.Button
+import android.app.Dialog
+import android.view.MenuItem
+import android.widget.ImageView
+import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
 
 
@@ -48,6 +52,9 @@ class MainActivity : AppCompatActivity() {
             ), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         requestButton.text = requestButtonLabel
+        requestButton.setOnClickListener {
+            showRequestModal()
+        }
 
         val payButton = findViewById<View>(R.id.pay_btn) as Button
         val payButtonLabel = SpannableString("   Pay")
@@ -79,6 +86,38 @@ class MainActivity : AppCompatActivity() {
         val inflater = menuInflater
         inflater.inflate(R.menu.toolbar_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.nav_button_qrcode -> {
+                showRequestModal()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showRequestModal() {
+
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.request_modal)
+        dialog.setTitle("")
+
+        val address = Wallet(this).getAddress()
+        val addressTextView = dialog.findViewById(R.id.address) as TextView
+        addressTextView.text = address
+        val image = dialog.findViewById(R.id.image) as ImageView
+
+        val bitmap = QRCode.from(address).withSize(3000, 3000).bitmap()
+        image.setImageBitmap(bitmap)
+
+//        val dialogButton = dialog.findViewById(R.id.dialogButtonOK) as Button
+//        dialogButton.setOnClickListener {
+//            dialog.dismiss()
+//        }
+
+        dialog.show()
     }
 
 
