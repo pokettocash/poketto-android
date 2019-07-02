@@ -24,6 +24,8 @@ import android.text.style.ImageSpan
 import android.text.SpannableString
 import android.view.View
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -116,6 +118,25 @@ class MainActivity : AppCompatActivity() {
 
         val bitmap = QRCode.from(address).withSize(3000, 3000).bitmap()
         image.setImageBitmap(bitmap)
+
+        val copyButton = dialog.findViewById(R.id.copy_layout) as LinearLayout
+        copyButton.setOnClickListener {
+
+            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
+            val clip = ClipData.newPlainText("text", address)
+            clipboard?.primaryClip = clip
+            dialog.dismiss()
+        }
+
+        val shareButton = dialog.findViewById(R.id.share_layout) as LinearLayout
+        shareButton.setOnClickListener {
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, address)
+                type = "text/plain"
+            }
+            startActivity(sendIntent)
+        }
 
 //        val dialogButton = dialog.findViewById(R.id.dialogButtonOK) as Button
 //        dialogButton.setOnClickListener {
