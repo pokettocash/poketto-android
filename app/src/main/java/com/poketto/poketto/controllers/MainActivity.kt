@@ -6,7 +6,6 @@ import android.util.Log
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.Web3j
-import android.widget.TextView
 import com.poketto.poketto.api.RetrofitInitializer
 import com.poketto.poketto.models.Transactions
 import com.poketto.poketto.services.Wallet
@@ -24,10 +23,12 @@ import android.text.Spannable
 import android.text.style.ImageSpan
 import android.text.SpannableString
 import android.view.View
-import android.widget.Button
 import android.app.Dialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.view.MenuItem
-import android.widget.ImageView
+import android.widget.*
 import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
 
@@ -66,10 +67,13 @@ class MainActivity : AppCompatActivity() {
         )
         payButton.text = payButtonLabel
 
-        //setting toolbar
-        setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar!!.elevation = 0F
+        val toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
+        toolbar.setNavigationIcon(R.drawable.nav_button_settings)
+        toolbar.setNavigationOnClickListener {
+            showSettingsModal()
+        }
 
         balanceTextView = findViewById(R.id.balance_value)
 
@@ -78,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("onCreate", "address: " + address)
 
         balanceFrom(address!!)
-        transactionsFrom(address!!)
+        transactionsFrom(address)
 //        send("0x3849bA8A4D7193bF550a6e04632b176F9Ce1B7e8", "0.01")
     }
 
@@ -89,6 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
         when (item!!.itemId) {
             R.id.nav_button_qrcode -> {
                 showRequestModal()
@@ -116,6 +121,61 @@ class MainActivity : AppCompatActivity() {
 //        dialogButton.setOnClickListener {
 //            dialog.dismiss()
 //        }
+
+        dialog.show()
+    }
+
+    private fun showSettingsModal() {
+
+        Log.d("showSettingsModal", "showSettingsModal")
+
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.settings_modal)
+        dialog.setTitle("")
+
+        val twitterButton = dialog.findViewById(R.id.settings_twitter) as ImageButton
+        twitterButton.setOnClickListener {
+            val url = "https://twitter.com/pokettocash"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        }
+
+        val discordButton = dialog.findViewById(R.id.settings_discord) as ImageButton
+        discordButton.setOnClickListener {
+            val url = "https://discord.gg/kMTUpME"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        }
+
+        val githubButton = dialog.findViewById(R.id.settings_github) as ImageButton
+        githubButton.setOnClickListener {
+            val url = "https://github.com/pokettocash"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        }
+
+        val legalButton = dialog.findViewById(R.id.settings_legal_layout) as LinearLayout
+        legalButton.setOnClickListener {
+            val url = "https://github.com/pokettocash/poketto-ios/blob/master/LICENSE"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        }
+
+        val backupButton = dialog.findViewById(R.id.backup_layout) as LinearLayout
+        backupButton.setOnClickListener {
+            val mnemonic = SecurePreferences.getStringValue(this, "mnemonic", null)
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, mnemonic)
+                type = "text/plain"
+            }
+            startActivity(sendIntent)
+        }
+
+        val versionNumberTextView = dialog.findViewById(R.id.app_version) as TextView
+        val manager = this.packageManager
+        val info = manager.getPackageInfo(this.packageName, PackageManager.GET_ACTIVITIES)
+        versionNumberTextView.text = "${info.versionName}(${info.versionCode})"
 
         dialog.show()
     }

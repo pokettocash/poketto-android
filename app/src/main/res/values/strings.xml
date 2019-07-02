@@ -16,4 +16,11 @@
     <string name="address">0x4b2Cbe48C378CaD5A2145358440B25627F99E189</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="share">Share with others</string>
+    <string name="settings">Settings</string>
+    <string name="settings_join_title">Join the community</string>
+    <string name="settings_help_title">Help us create the future of web</string>
+    <string name="settings_backup">Backup</string>
+    <string name="settings_seed">Import seed</string>
+    <string name="settings_legal">Legal</string>
+
 </resources>

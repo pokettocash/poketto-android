@@ -16,8 +16,7 @@
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:logo="@mipmap/nav_button_settings"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
     <View
             android:id="@+id/toolbar_divider"
