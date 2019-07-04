@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
     val GAS_PRICE = BigInteger.valueOf(1_000_000_000L)
     val GAS_LIMIT = BigInteger.valueOf(21000L)
     private var balanceTextView: TextView? = null
+    val IMPORT_SEED = 101
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,12 +81,8 @@ class MainActivity : AppCompatActivity() {
 
         balanceTextView = findViewById(R.id.balance_value)
 
-        val address = Wallet(this).getAddress()
+        updateWallet()
 
-        Log.d("onCreate", "address: " + address)
-
-        balanceFrom(address!!)
-        transactionsFrom(address)
 //        send("0x3849bA8A4D7193bF550a6e04632b176F9Ce1B7e8", "0.01")
     }
 
@@ -103,6 +101,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == IMPORT_SEED) {
+            updateWallet()
+        }
+    }
+
+    fun updateWallet() {
+
+        val address = Wallet(this).getAddress()
+        Log.d("updateWallet", "address: " + address)
+        balanceFrom(address!!)
+        transactionsFrom(address)
     }
 
     private fun showRequestModal() {
@@ -191,6 +203,13 @@ class MainActivity : AppCompatActivity() {
                 type = "text/plain"
             }
             startActivity(sendIntent)
+        }
+
+        val seedButton = dialog.findViewById(R.id.seed_layout) as LinearLayout
+        seedButton.setOnClickListener {
+
+            val intent = Intent(this, SeedActivity::class.java)
+            startActivityForResult(intent, IMPORT_SEED)
         }
 
         val versionNumberTextView = dialog.findViewById(R.id.app_version) as TextView

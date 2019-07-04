@@ -19,9 +19,8 @@ class Wallet(context: Context) {
         if(SecurePreferences.contains(context!!, "mnemonic")) {
 
             val mnemonic = SecurePreferences.getStringValue(context!!, "mnemonic", null)
-            Log.d("getAddress", "mnemonic: $mnemonic")
 
-            val seed = MnemonicUtils.generateSeed(mnemonic, "Poketto")
+            val seed = MnemonicUtils.generateSeed(mnemonic, "")
             val credentials = Credentials.create(ECKeyPair.create(Hash.sha256(seed)))
             val address = credentials.address
             Log.d("getAddress", "address: $address")

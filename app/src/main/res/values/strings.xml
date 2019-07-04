@@ -22,5 +22,7 @@
     <string name="settings_backup">Backup</string>
     <string name="settings_seed">Import seed</string>
     <string name="settings_legal">Legal</string>
+    <string name="done">Done</string>
+    <string name="paste_seed">Paste here your seed key...</string>
 
 </resources>
