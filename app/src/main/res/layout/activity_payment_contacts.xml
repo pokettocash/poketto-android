@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    <LinearLayout
+            android:id="@+id/clipboard_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:weightSum="10"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+        <ImageView
+                android:id="@+id/copy_to_clipboard_image_view"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/request_clipboard"
+                android:layout_weight="2"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:layout_gravity="center_vertical|start"
+                android:layout_weight="6">
+
+            <TextView
+                    android:id="@+id/copy_to_clipboard_text_view"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#000"
+                    android:textAlignment="textStart"
+                    android:text="@string/paste_from_clipboard"/>
+
+            <TextView
+                    android:id="@+id/address_text_view"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:textAlignment="textStart"
+                    android:text="@string/no_address"/>
+
+        </LinearLayout>
+
+
+        <ImageView
+                android:id="@+id/clipboard_arrow"
+                android:layout_width="17dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/settings_row_arrow"
+                android:layout_weight="2"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/scan_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:weightSum="10"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+        <ImageView
+                android:id="@+id/scan_image_view"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/scan_qrcode"
+                android:layout_weight="2"/>
+
+        <TextView
+                android:id="@+id/scan_text_view"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginBottom="1dp"
+                android:layout_gravity="center_vertical|start"
+                android:textColor="#000"
+                android:textAlignment="textStart"
+                android:text="@string/scan_qr_code"
+                android:layout_weight="6"/>
+
+        <ImageView
+                android:id="@+id/scan_arrow"
+                android:layout_width="17dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/settings_row_arrow"
+                android:layout_weight="2"/>
+
+    </LinearLayout>
+
+</LinearLayout>

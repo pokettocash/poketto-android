@@ -23,6 +23,9 @@
     <string name="settings_seed">Import seed</string>
     <string name="settings_legal">Legal</string>
     <string name="done">Done</string>
-    <string name="paste_seed">Paste here your seed key...</string>
+    <string name="paste_seed">Paste here your seed key&#8230;</string>
+    <string name="paste_from_clipboard">Paste from clipboard</string>
+    <string name="scan_qr_code">Scan address from QR Code</string>
+    <string name="no_address">No address on clipboard</string>
 
 </resources>

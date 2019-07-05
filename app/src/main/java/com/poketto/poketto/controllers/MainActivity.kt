@@ -70,6 +70,10 @@ class MainActivity : AppCompatActivity() {
             ), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         payButton.text = payButtonLabel
+        payButton.setOnClickListener {
+            val intent = Intent(this, PaymentContactsActivity::class.java)
+            startActivity(intent)
+        }
 
         val toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)

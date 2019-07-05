@@ -34,6 +34,19 @@
                   android:configChanges="orientation"
                   android:windowSoftInputMode="stateVisible">
         </activity>
+        <activity android:name=".controllers.PaymentContactsActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="orientation">
+        </activity>
+        <activity android:name=".controllers.PaymentSendActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="orientation"
+                  android:windowSoftInputMode="stateVisible">
+        </activity>
+        <activity android:name=".controllers.PaymentSuccessActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="orientation">
+        </activity>
     </application>
 
 </manifest>
