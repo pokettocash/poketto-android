@@ -3,18 +3,11 @@ package com.poketto.poketto.controllers
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.http.HttpService
-import org.web3j.protocol.Web3j
+
 import com.poketto.poketto.api.RetrofitInitializer
 import com.poketto.poketto.models.Transactions
 import com.poketto.poketto.services.Wallet
 import de.adorsys.android.securestoragelibrary.SecurePreferences
-import org.web3j.crypto.*
-import org.web3j.crypto.Hash.sha256
-import java.math.BigInteger
-import org.web3j.utils.Numeric
-import org.web3j.crypto.TransactionEncoder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,9 +30,6 @@ import com.poketto.poketto.R
 
 class MainActivity : AppCompatActivity() {
 
-    private val weiToDaiRate = 1000000000000000000
-    val GAS_PRICE = BigInteger.valueOf(1_000_000_000L)
-    val GAS_LIMIT = BigInteger.valueOf(21000L)
     private var balanceTextView: TextView? = null
     val IMPORT_SEED = 101
 
@@ -117,7 +107,10 @@ class MainActivity : AppCompatActivity() {
 
         val address = Wallet(this).getAddress()
         Log.d("updateWallet", "address: " + address)
-        balanceFrom(address!!)
+        val dai = Wallet(this).balanceFrom(address!!)
+        Log.d("balanceFrom", "dai balance: " + dai)
+        val formattedDaiString = String.format("%.2f", dai)
+        balanceTextView!!.text = "$formattedDaiString xDai"
         transactionsFrom(address)
     }
 
@@ -224,29 +217,6 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-
-    private fun balanceFrom(address: String) {
-
-        // connect to node
-        val web3 = Web3j.build(HttpService("https://dai.poa.network"))
-
-        // send asynchronous requests to get balance
-        val ethGetBalance = web3
-            .ethGetBalance(address, DefaultBlockParameterName.LATEST)
-            .sendAsync()
-            .get()
-
-        val wei = ethGetBalance.balance
-
-        val dai = wei.toDouble() / weiToDaiRate
-
-        val formattedDaiString = String.format("%.2f", dai)
-
-        balanceTextView!!.text = "$formattedDaiString xDai"
-
-        Log.d("balanceFrom", "dai balance: " + dai)
-    }
-
     private fun transactionsFrom(address: String) {
 
         val call = RetrofitInitializer().explorer().transactions("account", "txlist", address)
@@ -267,37 +237,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun send(toAddress: String, value: String) {
 
-        val endpoint = "https://dai.poa.network"
-        val web3 = Web3j.build(HttpService(endpoint))
-        val mnemonic = SecurePreferences.getStringValue(this, "mnemonic", null)
-        val seed = MnemonicUtils.generateSeed(mnemonic, "Poketto")
-        val credentials = Credentials.create(ECKeyPair.create(sha256(seed)))
-
-        val ethGetTransactionCount = web3.ethGetTransactionCount(
-            credentials.address, DefaultBlockParameterName.LATEST
-        ).sendAsync().get()
-
-        val nonce = ethGetTransactionCount.transactionCount
-
-        val rawTransaction = RawTransaction.createEtherTransaction(
-                nonce, GAS_PRICE, GAS_LIMIT, toAddress, BigInteger.valueOf((value.toFloat()*weiToDaiRate).toLong()))
-
-        Log.d("send", "rawTransaction: " + rawTransaction)
-
-        val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
-        val hexValue = Numeric.toHexString(signedMessage)
-
-        val ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get()
-        val transactionReceipt = ethSendTransaction.transactionHash
-
-//        val transactionReceipt = Transfer.sendFunds(
-//            web3, credentials, "0x4b2Cbe48C378CaD5A2145358440B25627F99E189",
-//            BigDecimal.valueOf(0.01), Convert.Unit.GWEI
-//        )
-        Log.d("send", "ethSendTransaction: " + ethSendTransaction)
-        Log.d("send", "send tx receipt: " + transactionReceipt)
-    }
 
 }

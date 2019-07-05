@@ -1,6 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent">
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    <LinearLayout
+            android:id="@+id/to_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:weightSum="10"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+        <TextView
+                android:id="@+id/to_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:textAlignment="textStart"
+                android:maxLines="1"
+                android:text="@string/to"
+                android:layout_weight="4"/>
+
+        <TextView
+                android:id="@+id/address_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:textAlignment="textStart"
+                android:text="@string/address"
+                android:layout_weight="2"/>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4" />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/amount_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:weightSum="10"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+        <TextView
+                android:id="@+id/xDai_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="start"
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:textAlignment="textStart"
+                android:maxLines="1"
+                android:text="@string/xDai"
+                android:layout_weight="4"/>
+
+        <EditText
+                android:id="@+id/amount_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/amount"
+                android:background="@null"
+                android:textAlignment="center"
+                android:inputType="numberDecimal"
+                android:layout_gravity="center_vertical|start"
+                android:layout_weight="2"/>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4" />
+
+    </LinearLayout>
+
+    <Button
+            android:id="@+id/send_max_button"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/black"
+            android:text="@string/send_max_balance"
+            android:textAllCaps="false"
+            android:gravity="center_vertical|center_horizontal"/>
+
+    <Button
+            android:id="@+id/send_button"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="20dp"
+            android:background="@mipmap/button_background"
+            android:text="@string/send"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"/>
+
+</LinearLayout>

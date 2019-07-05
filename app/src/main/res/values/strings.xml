@@ -27,5 +27,10 @@
     <string name="paste_from_clipboard">Paste from clipboard</string>
     <string name="scan_qr_code">Scan address from QR Code</string>
     <string name="no_address">No address on clipboard</string>
+    <string name="to">To:</string>
+    <string name="xDai">xDai</string>
+    <string name="send_max_balance">Send max balance</string>
+    <string name="send">Send</string>
+    <string name="amount">0,00</string>
 
 </resources>

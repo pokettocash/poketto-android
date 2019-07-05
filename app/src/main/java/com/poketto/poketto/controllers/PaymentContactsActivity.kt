@@ -4,7 +4,6 @@ import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.poketto.poketto.R
@@ -41,6 +40,7 @@ class PaymentContactsActivity : AppCompatActivity() {
             if(clipboard != null && clipboard.primaryClip != null) {
                 if (clipboard.primaryClip!!.getItemAt(0).text.startsWith("0x")) {
                     val intent = Intent(this, PaymentSendActivity::class.java)
+                    intent.putExtra("address", clipboard.primaryClip!!.getItemAt(0).text)
                     startActivity(intent)
                 }
             }
