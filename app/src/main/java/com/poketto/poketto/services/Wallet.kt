@@ -11,14 +11,17 @@ import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Numeric
 import java.math.BigInteger
 import java.security.SecureRandom
+import org.web3j.crypto.Bip32ECKeyPair
+import org.web3j.crypto.Bip32ECKeyPair.HARDENED_BIT
+import org.web3j.crypto.MnemonicUtils
+
+
 
 class Wallet(context: Context) {
 
     val GAS_PRICE = BigInteger.valueOf(1_000_000_000L)
     val GAS_LIMIT = BigInteger.valueOf(21000L)
-
     private val weiToDaiRate = 1000000000000000000
-
     private var context: Context? = context
 
     fun getAddress() : String? {
@@ -27,9 +30,14 @@ class Wallet(context: Context) {
 
             val mnemonic = SecurePreferences.getStringValue(context!!, "mnemonic", null)
 
-            val seed = MnemonicUtils.generateSeed(mnemonic, "")
-            val credentials = Credentials.create(ECKeyPair.create(Hash.sha256(seed)))
+            val seed = MnemonicUtils.generateSeed(mnemonic, null)
+
+            val masterKeypair = Bip32ECKeyPair.generateKeyPair(seed)
+            val path = intArrayOf(44 or HARDENED_BIT, 60 or HARDENED_BIT, 0 or HARDENED_BIT, 0, 0)
+            val x = Bip32ECKeyPair.deriveKeyPair(masterKeypair, path)
+            val credentials = Credentials.create(x)
             val address = credentials.address
+
             Log.d("getAddress", "address: $address")
             return address
         }

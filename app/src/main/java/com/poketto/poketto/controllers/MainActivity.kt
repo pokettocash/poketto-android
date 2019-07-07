@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         val address = Wallet(this).getAddress()
         Log.d("updateWallet", "address: " + address)
         val dai = Wallet(this).balanceFrom(address!!)
-        Log.d("balanceFrom", "dai balance: " + dai)
+        Log.d("balance", "dai balance: " + dai)
         val formattedDaiString = String.format("%.2f", dai)
         balanceTextView!!.text = "$formattedDaiString xDai"
         transactionsFrom(address)
