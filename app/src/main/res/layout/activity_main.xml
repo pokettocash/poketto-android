@@ -5,6 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         tools:context=".controllers.MainActivity">
 
     <android.support.v7.widget.Toolbar
@@ -37,7 +38,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:orientation="vertical"
-        >
+            android:background="@android:color/white"
+    >
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -141,5 +143,93 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <RelativeLayout
+            android:id="@+id/empty_state_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="58dp"
+            android:layout_marginBottom="58dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:background="@android:color/white"
+            android:visibility="invisible"
+    >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_marginBottom="60dp"
+                android:orientation="vertical">
+
+            <Button
+                    android:id="@+id/receive_funds_button"
+                    android:layout_width="184dp"
+                    android:layout_height="48dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@mipmap/button_background"
+                    android:text="@string/receive_funds_button"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:textAllCaps="false"
+            />
+
+            <TextView
+                    android:layout_width="184dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:textColor="#111111"
+                    android:text="@string/receive_funds_description"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+            />
+            
+            <View
+                    android:layout_width="184dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="25dp"
+                    android:background="#D8D8D8" />
+
+            <Button
+                    android:id="@+id/add_funds_button"
+                    android:layout_width="184dp"
+                    android:layout_height="48dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@mipmap/button_background"
+                    android:text="@string/add_funds_button"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:textAllCaps="false"
+            />
+
+            <TextView
+                    android:layout_width="184dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:textColor="#99111111"
+                    android:text="@string/add_funds_description"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+            />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+            android:id="@+id/launching_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="60dp"
+            android:background="@android:color/white"
+    />
 
 </android.support.constraint.ConstraintLayout>

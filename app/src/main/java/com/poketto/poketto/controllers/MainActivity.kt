@@ -26,6 +26,7 @@ import android.view.MenuItem
 import android.widget.*
 import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -49,6 +50,16 @@ class MainActivity : AppCompatActivity() {
         requestButton.text = requestButtonLabel
         requestButton.setOnClickListener {
             showRequestModal()
+        }
+
+        receive_funds_button.setOnClickListener {
+            showRequestModal()
+        }
+
+        add_funds_button.setOnClickListener {
+            val url = "https://poketto.cash"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
 
         val payButton = findViewById<View>(R.id.pay_btn) as Button
@@ -226,12 +237,17 @@ class MainActivity : AppCompatActivity() {
                     response?.body()?.let {
                         val transactions: Transactions = it
                         Log.d("onResponse", "transactions: " + transactions.result)
+                        launching_view.visibility = View.INVISIBLE
+                        if(transactions.result.isEmpty()) {
+                            empty_state_view.visibility = View.VISIBLE
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<Transactions?>?,
                                        t: Throwable?) {
                     Log.d("onFailure", "transactions: " + t?.localizedMessage)
+                    launching_view.visibility = View.INVISIBLE
                 }
             }
         )

@@ -32,5 +32,9 @@
     <string name="send_max_balance">Send max balance</string>
     <string name="send">Send</string>
     <string name="amount">0,00</string>
+    <string name="receive_funds_button">Receive funds</string>
+    <string name="receive_funds_description">Start receiving xDai transfers in your wallet</string>
+    <string name="add_funds_button">Add funds</string>
+    <string name="add_funds_description">Learn how to add funds to your wallet</string>
 
 </resources>
