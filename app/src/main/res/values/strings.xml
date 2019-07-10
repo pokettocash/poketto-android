@@ -36,5 +36,8 @@
     <string name="receive_funds_description">Start receiving xDai transfers in your wallet</string>
     <string name="add_funds_button">Add funds</string>
     <string name="add_funds_description">Learn how to add funds to your wallet</string>
+    <string name="sent">You\'ve just sent</string>
+    <string name="share_payment">Share payment</string>
+    <string name="assign_address">Assign address to contact</string>
 
 </resources>
