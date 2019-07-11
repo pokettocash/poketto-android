@@ -1,6 +1,7 @@
 package com.poketto.poketto.services
 
 import android.content.Context
+import android.os.AsyncTask
 import android.util.Log
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 import de.adorsys.android.securestoragelibrary.SecureStorageException
@@ -14,7 +15,7 @@ import java.security.SecureRandom
 import org.web3j.crypto.Bip32ECKeyPair
 import org.web3j.crypto.Bip32ECKeyPair.HARDENED_BIT
 import org.web3j.crypto.MnemonicUtils
-
+import org.web3j.protocol.core.methods.response.EthSendTransaction
 
 
 class Wallet(context: Context) {
@@ -94,7 +95,7 @@ class Wallet(context: Context) {
         Log.e("handleException", e.message)
     }
 
-    fun send(toAddress: String, value: String) {
+    fun send(toAddress: String, value: String, success: (result: EthSendTransaction) -> Unit, failure: (result: String) -> Unit) {
 
         val endpoint = "https://dai.poa.network"
         val web3 = Web3j.build(HttpService(endpoint))
@@ -102,28 +103,36 @@ class Wallet(context: Context) {
         val seed = MnemonicUtils.generateSeed(mnemonic, "")
         val credentials = Credentials.create(ECKeyPair.create(Hash.sha256(seed)))
 
-        val ethGetTransactionCount = web3.ethGetTransactionCount(
-            credentials.address, DefaultBlockParameterName.LATEST
-        ).sendAsync().get()
+        try {
+            val ethGetTransactionCount = web3.ethGetTransactionCount(
+                credentials.address, DefaultBlockParameterName.LATEST
+            ).sendAsync().get()
 
-        val nonce = ethGetTransactionCount.transactionCount
+            val nonce = ethGetTransactionCount.transactionCount
 
-        val rawTransaction = RawTransaction.createEtherTransaction(
-            nonce, GAS_PRICE, GAS_LIMIT, toAddress, BigInteger.valueOf((value.toFloat()*weiToDaiRate).toLong()))
+            val rawTransaction = RawTransaction.createEtherTransaction(
+                nonce, GAS_PRICE, GAS_LIMIT, toAddress, BigInteger.valueOf((value.toFloat()*weiToDaiRate).toLong()))
 
-        Log.d("send", "rawTransaction: " + rawTransaction)
+            Log.d("send", "rawTransaction: " + rawTransaction)
 
-        val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
-        val hexValue = Numeric.toHexString(signedMessage)
+            val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
+            val hexValue = Numeric.toHexString(signedMessage)
 
-        val ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get()
-        val transactionReceipt = ethSendTransaction.transactionHash
+            val ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get()
+            val transactionReceipt = ethSendTransaction.transactionHash
 
 //        val transactionReceipt = Transfer.sendFunds(
 //            web3, credentials, "0x4b2Cbe48C378CaD5A2145358440B25627F99E189",
 //            BigDecimal.valueOf(0.01), Convert.Unit.GWEI
 //        )
-        Log.d("send", "ethSendTransaction: " + ethSendTransaction)
-        Log.d("send", "send tx receipt: " + transactionReceipt)
+            Log.d("send", "ethSendTransaction: " + ethSendTransaction)
+            Log.d("send", "send tx receipt: " + transactionReceipt)
+
+            success(ethSendTransaction)
+
+        } catch (e: Exception) {
+
+            failure(e.localizedMessage)
+        }
     }
 }

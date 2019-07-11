@@ -38,8 +38,8 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginTop="26dp"
+                android:paddingBottom="32dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -49,7 +49,7 @@
                     android:textAlignment="center"
                     android:textSize="40sp"
                     android:textColor="#111111"
-                    android:text=""/>
+                    android:text="100"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -113,7 +113,7 @@
         <Button
                 android:id="@+id/share_payment_button"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="38dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@android:color/transparent"
                 android:text="@string/share_payment"
@@ -126,8 +126,8 @@
         <Button
                 android:id="@+id/assign_address_button"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginTop="32dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="12dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@android:color/transparent"
                 android:textColor="#111111"
@@ -144,7 +144,7 @@
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="28dp"
                 android:layout_marginBottom="20dp"
                 android:background="@mipmap/button_background"
                 android:text="@string/done"

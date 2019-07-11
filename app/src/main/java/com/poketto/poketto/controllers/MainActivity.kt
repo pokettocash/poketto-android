@@ -27,6 +27,10 @@ import android.widget.*
 import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.request_modal.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
+import org.jetbrains.anko.uiThread
 
 
 class MainActivity : AppCompatActivity() {
@@ -85,10 +89,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         balanceTextView = findViewById(R.id.balance_value)
+    }
+
+    override fun onResume() {
 
         updateWallet()
 
-//        send("0x3849bA8A4D7193bF550a6e04632b176F9Ce1B7e8", "0.01")
+        super.onResume()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -114,49 +121,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun updateWallet() {
+    private fun updateWallet() {
 
-        val address = Wallet(this).getAddress()
-        Log.d("updateWallet", "address: " + address)
-        val dai = Wallet(this).balanceFrom(address!!)
-        Log.d("balance", "dai balance: " + dai)
-        val formattedDaiString = String.format("%.2f", dai)
-        balanceTextView!!.text = "$formattedDaiString xDai"
-        transactionsFrom(address)
+        doAsync {
+            val address = Wallet(this@MainActivity).getAddress()
+            Log.d("updateWallet", "address: " + address)
+            val dai = Wallet(this@MainActivity).balanceFrom(address!!)
+            Log.d("balance", "dai balance: " + dai)
+
+            uiThread {
+                val formattedDaiString = String.format("%.2f", dai)
+                balanceTextView!!.text = "$formattedDaiString xDai"
+                transactionsFrom(address)
+            }
+        }
     }
 
     private fun showRequestModal() {
 
-        val dialog = Dialog(this)
+        val dialog = Dialog(this@MainActivity)
         dialog.setContentView(R.layout.request_modal)
         dialog.setTitle("")
-
-        val address = Wallet(this).getAddress()
-        val addressTextView = dialog.findViewById(R.id.address) as TextView
-        addressTextView.text = address
-        val image = dialog.findViewById(R.id.image) as ImageView
-
-        val bitmap = QRCode.from(address).withSize(3000, 3000).bitmap()
-        image.setImageBitmap(bitmap)
-
-        val copyButton = dialog.findViewById(R.id.copy_layout) as LinearLayout
-        copyButton.setOnClickListener {
-
-            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
-            val clip = ClipData.newPlainText("text", address)
-            clipboard?.primaryClip = clip
-            dialog.dismiss()
-        }
-
-        val shareButton = dialog.findViewById(R.id.share_layout) as LinearLayout
-        shareButton.setOnClickListener {
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, address)
-                type = "text/plain"
-            }
-            startActivity(sendIntent)
-        }
 
 //        val dialogButton = dialog.findViewById(R.id.dialogButtonOK) as Button
 //        dialogButton.setOnClickListener {
@@ -164,6 +149,49 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         dialog.show()
+
+        doAsync {
+
+            val address = Wallet(this@MainActivity).getAddress()
+
+            uiThread {
+
+                val addressTextView = dialog.findViewById(R.id.address) as TextView
+                addressTextView.text = address
+
+                val copyButton = dialog.findViewById(R.id.copy_layout) as LinearLayout
+                copyButton.setOnClickListener {
+
+                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
+                    val clip = ClipData.newPlainText("text", address)
+                    clipboard?.primaryClip = clip
+                    dialog.dismiss()
+                }
+
+                val shareButton = dialog.findViewById(R.id.share_layout) as LinearLayout
+                shareButton.setOnClickListener {
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, address)
+                        type = "text/plain"
+                    }
+                    startActivity(sendIntent)
+                }
+
+                doAsync {
+
+                    val bitmap = QRCode.from(address).withSize(150, 150).bitmap()
+
+                    uiThread {
+
+                        val image = dialog.findViewById(R.id.image) as ImageView
+                        image.setImageBitmap(bitmap)
+                    }
+                }
+
+            }
+        }
+
     }
 
     private fun showSettingsModal() {
