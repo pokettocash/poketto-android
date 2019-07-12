@@ -1,7 +1,6 @@
 package com.poketto.poketto.services
 
 import android.content.Context
-import android.os.AsyncTask
 import android.util.Log
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 import de.adorsys.android.securestoragelibrary.SecureStorageException
@@ -9,13 +8,17 @@ import org.web3j.crypto.*
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
-import org.web3j.utils.Numeric
 import java.math.BigInteger
 import java.security.SecureRandom
 import org.web3j.crypto.Bip32ECKeyPair
 import org.web3j.crypto.Bip32ECKeyPair.HARDENED_BIT
 import org.web3j.crypto.MnemonicUtils
-import org.web3j.protocol.core.methods.response.EthSendTransaction
+import org.web3j.protocol.core.methods.response.TransactionReceipt
+import org.web3j.tx.RawTransactionManager
+import org.web3j.tx.TransactionManager
+import org.web3j.tx.Transfer
+import org.web3j.utils.Convert
+import java.math.BigDecimal
 
 
 class Wallet(context: Context) {
@@ -29,15 +32,7 @@ class Wallet(context: Context) {
 
         if(SecurePreferences.contains(context!!, "mnemonic")) {
 
-            val mnemonic = SecurePreferences.getStringValue(context!!, "mnemonic", null)
-
-            val seed = MnemonicUtils.generateSeed(mnemonic, null)
-
-            val masterKeypair = Bip32ECKeyPair.generateKeyPair(seed)
-            val path = intArrayOf(44 or HARDENED_BIT, 60 or HARDENED_BIT, 0 or HARDENED_BIT, 0, 0)
-            val x = Bip32ECKeyPair.deriveKeyPair(masterKeypair, path)
-            val credentials = Credentials.create(x)
-            val address = credentials.address
+            val address = getCredentialsFromPrivateKey().address
 
             Log.d("getAddress", "address: $address")
             return address
@@ -95,44 +90,36 @@ class Wallet(context: Context) {
         Log.e("handleException", e.message)
     }
 
-    fun send(toAddress: String, value: String, success: (result: EthSendTransaction) -> Unit, failure: (result: String) -> Unit) {
+    fun getCredentialsFromPrivateKey() : Credentials {
+
+        val mnemonic = SecurePreferences.getStringValue(context!!, "mnemonic", null)
+        val seed = MnemonicUtils.generateSeed(mnemonic, null)
+        val masterKeypair = Bip32ECKeyPair.generateKeyPair(seed)
+        val path = intArrayOf(44 or HARDENED_BIT, 60 or HARDENED_BIT, 0 or HARDENED_BIT, 0, 0)
+        val x = Bip32ECKeyPair.deriveKeyPair(masterKeypair, path)
+        return Credentials.create(x)
+    }
+
+    fun send(toAddress: String, value: String, success: (result: TransactionReceipt) -> Unit, failure: (result: String) -> Unit) {
 
         val endpoint = "https://dai.poa.network"
         val web3 = Web3j.build(HttpService(endpoint))
-        val mnemonic = SecurePreferences.getStringValue(context!!, "mnemonic", null)
-        val seed = MnemonicUtils.generateSeed(mnemonic, "")
-        val credentials = Credentials.create(ECKeyPair.create(Hash.sha256(seed)))
+        val credentials = getCredentialsFromPrivateKey()
 
         try {
-            val ethGetTransactionCount = web3.ethGetTransactionCount(
-                credentials.address, DefaultBlockParameterName.LATEST
-            ).sendAsync().get()
 
-            val nonce = ethGetTransactionCount.transactionCount
+            val transactionManager : TransactionManager = RawTransactionManager(web3, credentials)
+            val transfer = Transfer(web3, transactionManager)
+            val transactionReceipt = transfer.sendFunds(toAddress, BigDecimal.valueOf(value.toDouble()), Convert.Unit.ETHER, GAS_PRICE, GAS_LIMIT).sendAsync()
 
-            val rawTransaction = RawTransaction.createEtherTransaction(
-                nonce, GAS_PRICE, GAS_LIMIT, toAddress, BigInteger.valueOf((value.toFloat()*weiToDaiRate).toLong()))
+            Log.d("send", "got tx receipt: " + transactionReceipt.get())
 
-            Log.d("send", "rawTransaction: " + rawTransaction)
-
-            val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
-            val hexValue = Numeric.toHexString(signedMessage)
-
-            val ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get()
-            val transactionReceipt = ethSendTransaction.transactionHash
-
-//        val transactionReceipt = Transfer.sendFunds(
-//            web3, credentials, "0x4b2Cbe48C378CaD5A2145358440B25627F99E189",
-//            BigDecimal.valueOf(0.01), Convert.Unit.GWEI
-//        )
-            Log.d("send", "ethSendTransaction: " + ethSendTransaction)
-            Log.d("send", "send tx receipt: " + transactionReceipt)
-
-            success(ethSendTransaction)
+            success(transactionReceipt.get())
 
         } catch (e: Exception) {
 
             failure(e.localizedMessage)
         }
     }
+
 }

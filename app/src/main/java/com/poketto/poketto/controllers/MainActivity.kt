@@ -132,6 +132,8 @@ class MainActivity : AppCompatActivity() {
             uiThread {
                 val formattedDaiString = String.format("%.2f", dai)
                 balanceTextView!!.text = "$formattedDaiString xDai"
+
+                Log.d("transactionsFrom", "transactionsFrom")
                 transactionsFrom(address)
             }
         }

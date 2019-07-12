@@ -1,6 +1,5 @@
 package com.poketto.poketto.controllers
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,14 +7,14 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import com.poketto.poketto.R
 import com.poketto.poketto.services.Wallet
-import kotlinx.android.synthetic.main.request_modal.*
-import net.glxn.qrgen.android.QRCode
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import com.google.gson.Gson
+
+
+
 
 class PaymentSendActivity : AppCompatActivity() {
 
@@ -26,9 +25,9 @@ class PaymentSendActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_payment_send)
+        setContentView(com.poketto.poketto.R.layout.activity_payment_send)
 
-        val toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<android.support.v7.widget.Toolbar>(com.poketto.poketto.R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(true)
         supportActionBar!!.title = "Send Payment"
@@ -38,18 +37,18 @@ class PaymentSendActivity : AppCompatActivity() {
             finish()
         }
 
-        amountEditText = findViewById(R.id.amount_edit_text)
+        amountEditText = findViewById(com.poketto.poketto.R.id.amount_edit_text)
 
         mAddress = intent.getStringExtra("address")
-        val addressTextView = findViewById<TextView>(R.id.address_text_view)
+        val addressTextView = findViewById<TextView>(com.poketto.poketto.R.id.address_text_view)
         addressTextView.text = mAddress
 
-        val sendButton = findViewById<Button>(R.id.send_button)
+        val sendButton = findViewById<Button>(com.poketto.poketto.R.id.send_button)
         sendButton!!.setOnClickListener {
             sendTransaction()
         }
 
-        val maxButton = findViewById<Button>(R.id.send_max_button)
+        val maxButton = findViewById<Button>(com.poketto.poketto.R.id.send_max_button)
         maxButton!!.setOnClickListener {
             val transactionCost = 0.000021F
             val address = Wallet(this).getAddress()
@@ -63,17 +62,14 @@ class PaymentSendActivity : AppCompatActivity() {
 
     private fun showLoadingSpinner() {
 
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(amountEditText!!.getWindowToken(), 0)
-
-        val promptsView = View.inflate(this, R.layout.dialog_progress, null)
-        val progressBar = promptsView.findViewById(R.id.dialog_progress_bar) as ProgressBar
-        progressBar.getIndeterminateDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.colorAccent),
+        val promptsView = View.inflate(this, com.poketto.poketto.R.layout.dialog_progress, null)
+        val progressBar = promptsView.findViewById(com.poketto.poketto.R.id.dialog_progress_bar) as ProgressBar
+        progressBar.indeterminateDrawable.setColorFilter(
+            ContextCompat.getColor(this, com.poketto.poketto.R.color.colorAccent),
             android.graphics.PorterDuff.Mode.MULTIPLY
         )
 
-        val alertDialogBuilder = AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog)
+        val alertDialogBuilder = AlertDialog.Builder(this, com.poketto.poketto.R.style.Theme_AppCompat_Light_Dialog)
         alertDialogBuilder.setView(promptsView)
         alertDialog = alertDialogBuilder.create()
         alertDialog!!.show()
@@ -99,7 +95,7 @@ class PaymentSendActivity : AppCompatActivity() {
 
                     hideLoadingSpinner()
                     val intent = Intent(this@PaymentSendActivity, PaymentSuccessActivity::class.java)
-                    intent.putExtra("receipt", transactionReceipt.transactionHash)
+                    intent.putExtra("receipt", Gson().toJson(transactionReceipt))
                     intent.putExtra("from_details", false)
                     startActivity(intent)
                 }
@@ -116,4 +112,5 @@ class PaymentSendActivity : AppCompatActivity() {
             })
         }
     }
+
 }
