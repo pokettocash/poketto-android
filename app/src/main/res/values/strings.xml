@@ -39,5 +39,6 @@
     <string name="sent">You\'ve just sent</string>
     <string name="share_payment">Share payment</string>
     <string name="assign_address">Assign address to contact</string>
+    <string name="unknown">Unknown</string>
 
 </resources>

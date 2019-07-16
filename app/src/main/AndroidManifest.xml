@@ -47,6 +47,9 @@
                   android:screenOrientation="portrait"
                   android:configChanges="orientation">
         </activity>
-    </application>
+        <activity android:name=".controllers.PaymentDetailsActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="orientation">
+        </activity>    </application>
 
 </manifest>

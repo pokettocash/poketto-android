@@ -22,10 +22,12 @@ import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.widget.*
 import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
+import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.request_modal.*
 import org.jetbrains.anko.doAsync
@@ -37,11 +39,16 @@ class MainActivity : AppCompatActivity() {
 
     private var balanceTextView: TextView? = null
     val IMPORT_SEED = 101
-
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var adapter: RecyclerAdapter
+    private var transactionsList = ArrayList<Transaction>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        linearLayoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = linearLayoutManager
 
         val requestButton = findViewById<View>(R.id.request_btn) as Button
         val requestButtonLabel = SpannableString("   Request")
@@ -125,11 +132,17 @@ class MainActivity : AppCompatActivity() {
 
         doAsync {
             val address = Wallet(this@MainActivity).getAddress()
+
+
             Log.d("updateWallet", "address: " + address)
             val dai = Wallet(this@MainActivity).balanceFrom(address!!)
             Log.d("balance", "dai balance: " + dai)
 
             uiThread {
+
+                adapter = RecyclerAdapter(transactionsList, address)
+                recyclerView.adapter = adapter
+
                 val formattedDaiString = String.format("%.2f", dai)
                 balanceTextView!!.text = "$formattedDaiString xDai"
 
@@ -270,6 +283,10 @@ class MainActivity : AppCompatActivity() {
                         launching_view.visibility = View.INVISIBLE
                         if(transactions.result.isEmpty()) {
                             empty_state_view.visibility = View.VISIBLE
+                        }
+                        runOnUiThread {
+                            transactionsList.addAll(transactions.result)
+                            adapter.notifyItemInserted(transactionsList.size)
                         }
                     }
                 }

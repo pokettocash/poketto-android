@@ -30,7 +30,7 @@
             android:background="#D8D8D8" />
 
     <LinearLayout
-            android:id="@+id/dashboard_header"
+            android:id="@+id/dashboard"
             app:layout_constraintTop_toTopOf="@+id/toolbar_divider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,108 +41,126 @@
             android:background="@android:color/white"
     >
         <LinearLayout
+                android:id="@+id/dashboard_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
+                android:orientation="vertical"
+                android:background="@android:color/white"
+        >
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-            >
-                <TextView
-                        android:id="@+id/balance"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:text="@string/balance"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                />
-                <TextView
-                        android:id="@+id/balance_value"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                >
+                    <TextView
+                            android:id="@+id/balance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:text="@string/balance"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                    />
+                    <TextView
+                            android:id="@+id/balance_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:textColor="@android:color/black"
+                            android:text="@string/balance_value"
+                            android:textStyle="normal"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textSize="22sp"
+                    />
+                </LinearLayout>
+
+                <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:textColor="@android:color/black"
-                        android:text="@string/balance_value"
-                        android:textStyle="normal"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textSize="22sp"
-                />
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                >
+                    <TextView
+                            android:id="@+id/spent_today"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="textEnd"
+                            android:textColor="@android:color/black"
+                            android:text="@string/spent_today"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                    />
+                    <TextView
+                            android:id="@+id/spent_today_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:textAlignment="textEnd"
+                            android:textColor="@android:color/black"
+                            android:text="@string/spent_today_value"
+                            android:textStyle="normal"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textSize="22sp"
+                    />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-            >
-                <TextView
-                        android:id="@+id/spent_today"
+                    android:layout_marginTop="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                <Button
+                        android:id="@+id/request_btn"
+                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="textEnd"
-                        android:textColor="@android:color/black"
-                        android:text="@string/spent_today"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                />
-                <TextView
-                        android:id="@+id/spent_today_value"
+                        android:layout_height="60dp"
+                        android:layout_marginEnd="-1.5dp"
+                        android:background="@mipmap/request_button_background"
+                        android:text="@string/request"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="false" />
+
+                <Button
+                        android:id="@+id/pay_btn"
+                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:textAlignment="textEnd"
-                        android:textColor="@android:color/black"
-                        android:text="@string/spent_today_value"
-                        android:textStyle="normal"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textSize="22sp"
-                />
+                        android:layout_height="60dp"
+                        android:layout_marginStart="-1.5dp"
+                        android:background="@mipmap/pay_button_background"
+                        android:text="@string/pay"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="false"/>
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-            <Button
-                    android:id="@+id/request_btn"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginEnd="-1.5dp"
-                    android:background="@mipmap/request_button_background"
-                    android:text="@string/request"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/white"
-                    android:textAllCaps="false" />
-
-            <Button
-                    android:id="@+id/pay_btn"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="-1.5dp"
-                    android:background="@mipmap/pay_button_background"
-                    android:text="@string/pay"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/white"
-                    android:textAllCaps="false"/>
-
-        </LinearLayout>
-
+                android:layout_height="match_parent"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="88dp"
+                android:scrollbars="vertical"/>
     </LinearLayout>
+
+
 
     <RelativeLayout
             android:id="@+id/empty_state_view"
