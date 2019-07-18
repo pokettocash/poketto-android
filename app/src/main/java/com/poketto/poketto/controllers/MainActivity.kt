@@ -285,7 +285,8 @@ class MainActivity : AppCompatActivity() {
                             empty_state_view.visibility = View.VISIBLE
                         }
                         runOnUiThread {
-                            transactionsList.addAll(transactions.result)
+                            transactionsList.clear()
+                            transactionsList.addAll(transactions.result.reversed())
                             adapter.notifyItemInserted(transactionsList.size)
                         }
                     }

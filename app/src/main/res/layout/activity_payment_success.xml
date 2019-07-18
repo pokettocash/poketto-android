@@ -33,7 +33,7 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textColor="#111111"
-                android:text="@string/sent"/>
+                android:text="@string/just_sent"/>
 
         <LinearLayout
                 android:layout_width="match_parent"

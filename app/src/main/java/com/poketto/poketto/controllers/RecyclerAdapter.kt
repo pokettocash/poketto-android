@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.Gson
 import com.poketto.poketto.R
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
@@ -29,7 +30,7 @@ class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private 
         private var view: View = v
         private var transaction: Transaction? = null
         private val weiToDaiRate = 1000000000000000000
-
+        private var ownerAddress: String? = null
 
         init {
             v.setOnClickListener(this)
@@ -40,7 +41,8 @@ class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private 
             Log.d("RecyclerView", "CLICK!")
             val context = itemView.context
             val paymentDetailsIntent = Intent(context, PaymentDetailsActivity::class.java)
-//            paymentDetailsIntent.putExtra(TRANSACTION_KEY, transaction)
+            paymentDetailsIntent.putExtra(TRANSACTION_KEY, Gson().toJson(transaction))
+            paymentDetailsIntent.putExtra("ownerAddress", ownerAddress)
             context.startActivity(paymentDetailsIntent)
         }
 
@@ -50,6 +52,7 @@ class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private 
 
         fun bindTransaction(transaction: Transaction, ownerAddress: String) {
             this.transaction = transaction
+            this.ownerAddress = ownerAddress
 
             val formattedDaiString = String.format("%.2f", transaction.value!!.toDouble()/weiToDaiRate)
 
