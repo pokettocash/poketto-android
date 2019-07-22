@@ -43,7 +43,11 @@ class PaymentDetailsActivity: AppCompatActivity()  {
 
         send_new_payment_button.setOnClickListener {
             val paymentSendIntent = Intent(this, PaymentSendActivity::class.java)
-            paymentSendIntent.putExtra("address", ownerAddress)
+            if(transaction.from == ownerAddress) {
+                paymentSendIntent.putExtra("address", transaction.to)
+            } else {
+                paymentSendIntent.putExtra("address", transaction.from)
+            }
             startActivity(paymentSendIntent)
         }
 

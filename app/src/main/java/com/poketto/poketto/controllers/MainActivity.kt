@@ -29,9 +29,7 @@ import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.request_modal.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 
 
@@ -178,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                 copyButton.setOnClickListener {
 
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
-                    val clip = ClipData.newPlainText("text", address)
+                    val clip = ClipData.newPlainText("text", "ethereum:${address}")
                     clipboard?.primaryClip = clip
                     dialog.dismiss()
                 }
@@ -187,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                 shareButton.setOnClickListener {
                     val sendIntent: Intent = Intent().apply {
                         action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, address)
+                        putExtra(Intent.EXTRA_TEXT, "ethereum:${address}")
                         type = "text/plain"
                     }
                     startActivity(sendIntent)

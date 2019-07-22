@@ -44,6 +44,9 @@ dependencies {
     implementation 'com.github.kenglxn.QRGen:android:2.3.0'
     implementation 'org.jetbrains.anko:anko-common:0.9'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation ('com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.3@aar'){
+        transitive = true
+    }
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'

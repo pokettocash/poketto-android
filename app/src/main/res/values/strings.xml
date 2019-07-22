@@ -44,5 +44,6 @@
     <string name="send_new_payment">Send new payment</string>
     <string name="assign_address">Assign address to contact</string>
     <string name="unknown">Unknown</string>
-
+    <string name="scan_send_payment">Scan to send a payment</string>
+    <string name="scan_send_payment_description">You can scan a QR code to send xDai to another wallet</string>
 </resources>

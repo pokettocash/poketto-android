@@ -78,7 +78,7 @@
                 android:layout_gravity="center_horizontal"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:text="@string/address"/>
+                android:text=""/>
 
         <LinearLayout
                 android:id="@+id/copy_layout"
