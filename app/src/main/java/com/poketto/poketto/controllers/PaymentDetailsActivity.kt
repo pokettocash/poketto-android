@@ -1,18 +1,26 @@
 package com.poketto.poketto.controllers
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.google.gson.Gson
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_payment_details.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+const val CONTACTS_PERMISSION = 1002
 
 class PaymentDetailsActivity: AppCompatActivity()  {
 
     private val weiToDaiRate = 1000000000000000000
+    private var ownerAddress = ""
+    private var otherAddress = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +28,13 @@ class PaymentDetailsActivity: AppCompatActivity()  {
 
         val transactionJson = intent.getStringExtra("TRANSACTION")
         val transaction = Gson().fromJson(transactionJson, Transaction::class.java)
-        val ownerAddress = intent.getStringExtra("ownerAddress")
+        ownerAddress = intent.getStringExtra("ownerAddress")
+
+        if(transaction.from == ownerAddress) {
+            otherAddress =  transaction.to!!
+        } else {
+            otherAddress = transaction.from!!
+        }
 
         val toolbar = findViewById<android.support.v7.widget.Toolbar>(com.poketto.poketto.R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -43,12 +57,16 @@ class PaymentDetailsActivity: AppCompatActivity()  {
 
         send_new_payment_button.setOnClickListener {
             val paymentSendIntent = Intent(this, PaymentSendActivity::class.java)
-            if(transaction.from == ownerAddress) {
-                paymentSendIntent.putExtra("address", transaction.to)
-            } else {
-                paymentSendIntent.putExtra("address", transaction.from)
-            }
+            paymentSendIntent.putExtra("address", otherAddress)
             startActivity(paymentSendIntent)
+        }
+
+        assign_address_button.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS), CONTACTS_PERMISSION)
+            } else {
+                assignAddressToContact()
+            }
         }
 
         val formattedDaiString = String.format("%.2f", transaction.value!!.toFloat() / weiToDaiRate)
@@ -66,6 +84,29 @@ class PaymentDetailsActivity: AppCompatActivity()  {
 
         date_text_view.text = getDateTime(transaction.timeStamp!!)
         hours_text_view.text = getHourTime(transaction.timeStamp)
+    }
+
+    override
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            CONTACTS_PERMISSION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    assignAddressToContact()
+                } else {
+                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                return
+            }
+        }
+    }
+
+
+    private fun assignAddressToContact() {
+
+        val contactsIntent = Intent(this, ContactsActivity::class.java)
+        contactsIntent.putExtra("address", otherAddress)
+        startActivity(contactsIntent)
     }
 
     private fun getDateTime(s: String): String? {

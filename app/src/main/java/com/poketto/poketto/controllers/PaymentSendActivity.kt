@@ -14,8 +14,6 @@ import org.jetbrains.anko.uiThread
 import com.google.gson.Gson
 
 
-
-
 class PaymentSendActivity : AppCompatActivity() {
 
     private var amountEditText: EditText? = null

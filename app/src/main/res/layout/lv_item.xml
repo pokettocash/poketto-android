@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+        <!--<com.makeramen.roundedimageview.RoundedImageView-->
+                <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+                <!--android:id="@+id/imageView1"-->
+                <!--android:src="@drawable/photo1"-->
+                <!--android:scaleType="fitCenter"-->
+                <!--app:riv_corner_radius="30dip"-->
+                <!--app:riv_border_width="2dip"-->
+                <!--app:riv_border_color="#333333"-->
+                <!--app:riv_mutate_background="true"-->
+                <!--app:riv_tile_mode="repeat"-->
+                <!--app:riv_oval="true" />-->
+
+        <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/itemImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                app:riv_corner_radius="20dip"
+                android:src="@drawable/pay_unknown"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:adjustViewBounds="true"/>
+
+        <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#111111"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:text="" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
