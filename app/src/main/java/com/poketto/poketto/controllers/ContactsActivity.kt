@@ -8,31 +8,34 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
 import com.makeramen.roundedimageview.RoundedImageView
-import com.poketto.poketto.R
 import com.poketto.poketto.models.ContactModel
 import com.poketto.poketto.utils.PhoneContactUtils
+import kotlinx.android.synthetic.main.activity_contacts.*
+import android.widget.*
+import org.bouncycastle.asn1.x500.style.RFC4519Style.l
+import android.widget.Toast
+
+
+
 
 class ContactsActivity: AppCompatActivity() {
 
     private var listView: ListView? = null
     private var customAdapter: CustomAdapter? = null
     private var contactModelArrayList: ArrayList<ContactModel>? = null
+    private var filteredContactModelArrayList: ArrayList<ContactModel>? = null
     private var phoneContactUtils: PhoneContactUtils? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_contacts)
+        setContentView(com.poketto.poketto.R.layout.activity_contacts)
 
         phoneContactUtils = PhoneContactUtils(this)
 
 
-        val toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<android.support.v7.widget.Toolbar>(com.poketto.poketto.R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(true)
         supportActionBar!!.title = "Assign address"
@@ -44,7 +47,7 @@ class ContactsActivity: AppCompatActivity() {
 
 //        val address = intent.getStringExtra("address")
 
-        listView = findViewById(R.id.listView)
+        listView = findViewById(com.poketto.poketto.R.id.listView)
 
         contactModelArrayList = ArrayList()
 
@@ -61,12 +64,40 @@ class ContactsActivity: AppCompatActivity() {
         }
         phones.close()
 
-        customAdapter = CustomAdapter(this, phoneContactUtils!!, contactModelArrayList!!)
+        filteredContactModelArrayList = arrayListOf()
+        filteredContactModelArrayList!!.addAll(contactModelArrayList!!)
+
+        customAdapter = CustomAdapter(this, phoneContactUtils!!, filteredContactModelArrayList!!)
         listView!!.adapter = customAdapter
+
+
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                Log.d("onQueryTextChange: ", newText)
+                val newContactsList = contactModelArrayList!!.filter { l -> l.name!!.contains(newText) }
+                val newArrayList = arrayListOf<ContactModel>()
+                newArrayList.addAll(newContactsList)
+                updateList(newArrayList)
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                // task HERE
+                searchBar.clearFocus()
+                return false
+            }
+        })
 
     }
 
-    class CustomAdapter(private val context: Context, private val phoneContactUtils : PhoneContactUtils, private val contactModelArrayList: ArrayList<ContactModel>) : BaseAdapter() {
+    private fun updateList(filteredContactsList: ArrayList<ContactModel>) {
+        filteredContactModelArrayList!!.clear()
+        filteredContactModelArrayList!!.addAll(filteredContactsList)
+        customAdapter!!.notifyDataSetChanged()
+    }
+
+    class CustomAdapter(private val context: Context, private val phoneContactUtils : PhoneContactUtils, private val adapterList: ArrayList<ContactModel>) : BaseAdapter() {
 
         override fun getViewTypeCount(): Int {
             return count
@@ -78,11 +109,11 @@ class ContactsActivity: AppCompatActivity() {
         }
 
         override fun getCount(): Int {
-            return contactModelArrayList.size
+            return adapterList.size
         }
 
         override fun getItem(position: Int): Any {
-            return contactModelArrayList[position]
+            return adapterList[position]
         }
 
         override fun getItemId(position: Int): Long {
@@ -93,20 +124,20 @@ class ContactsActivity: AppCompatActivity() {
             var convertedView = convertView
             val holder: ViewHolder
 
-            val contactModel = contactModelArrayList[position]
+            val contactModel = adapterList[position]
 
             if (convertedView == null) {
                 holder = ViewHolder()
                 val inflater = context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                convertedView = inflater.inflate(R.layout.lv_item, null, true)
+                convertedView = inflater.inflate(com.poketto.poketto.R.layout.lv_item, null, true)
 
-                holder.contactName = convertedView!!.findViewById(R.id.name) as TextView
+                holder.contactName = convertedView!!.findViewById(com.poketto.poketto.R.id.name) as TextView
 
                 if(contactModel.number != null) {
                     val contactId = phoneContactUtils.fetchContactIdFromPhoneNumber(contactModel.number!!)
                     val contactImageUri = phoneContactUtils.getPhotoUri(contactId.toLong())
-                    holder.contactImageView = convertedView.findViewById(R.id.itemImage) as RoundedImageView
+                    holder.contactImageView = convertedView.findViewById(com.poketto.poketto.R.id.itemImage) as RoundedImageView
                     holder.contactImageView!!.setImageURI(contactImageUri)
                 }
 
