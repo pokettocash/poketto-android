@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.activity_contacts.*
 import android.widget.*
 import org.bouncycastle.asn1.x500.style.RFC4519Style.l
 import android.widget.Toast
-
-
+import com.poketto.poketto.data.Contact
+import com.poketto.poketto.data.ContactsDAO
 
 
 class ContactsActivity: AppCompatActivity() {
@@ -26,13 +26,16 @@ class ContactsActivity: AppCompatActivity() {
     private var contactModelArrayList: ArrayList<ContactModel>? = null
     private var filteredContactModelArrayList: ArrayList<ContactModel>? = null
     private var phoneContactUtils: PhoneContactUtils? = null
-
+    private var contactsDAO : ContactsDAO? = null
+    private var address : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.poketto.poketto.R.layout.activity_contacts)
 
         phoneContactUtils = PhoneContactUtils(this)
+
+        contactsDAO = ContactsDAO(this)
 
 
         val toolbar = findViewById<android.support.v7.widget.Toolbar>(com.poketto.poketto.R.id.toolbar)
@@ -45,7 +48,7 @@ class ContactsActivity: AppCompatActivity() {
             finish()
         }
 
-//        val address = intent.getStringExtra("address")
+        address = intent.getStringExtra("address")
 
         listView = findViewById(com.poketto.poketto.R.id.listView)
 
@@ -69,6 +72,30 @@ class ContactsActivity: AppCompatActivity() {
 
         customAdapter = CustomAdapter(this, phoneContactUtils!!, filteredContactModelArrayList!!)
         listView!!.adapter = customAdapter
+        
+        listView!!.setOnItemClickListener { _, _, position, _ ->
+
+            Log.d("listview position", position.toString())
+
+            val contactModel = filteredContactModelArrayList!!.get(position)
+            val contact = Contact()
+            contact.address = address
+            contact.name = contactModel.name
+
+            if(contactModel.number != null) {
+                val contactId = phoneContactUtils!!.fetchContactIdFromPhoneNumber(contactModel.number!!)
+                val contactImageUri = phoneContactUtils!!.getPhotoUri(contactId.toLong())
+                contact.avatar_url = contactImageUri.toString()
+                contact.contact_id = contactId
+            }
+            Log.d("contact save id", contact.contact_id)
+            Log.d("contact save name", contact.name)
+            Log.d("contact save address", contact.address)
+
+            contactsDAO!!.save(contact)
+
+            finish()
+        }
 
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

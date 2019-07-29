@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.widget.*
 import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
+import com.poketto.poketto.data.ContactsDAO
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
@@ -40,10 +41,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerAdapter
     private var transactionsList = ArrayList<Transaction>()
+    private var contactsDAO : ContactsDAO? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        contactsDAO = ContactsDAO(this)
+        val contacts = contactsDAO!!.getContacts()
+        Log.d("contacts: ", contacts.size.toString())
 
         linearLayoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = linearLayoutManager
