@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         add_funds_button.setOnClickListener {
-            val url = "https://poketto.cash"
+            val url = "https://medium.com/@jaredstauffer/how-to-get-xdai-how-to-convert-dai-to-xdai-eth-dai-xdai-30a60e4b6641"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         }
