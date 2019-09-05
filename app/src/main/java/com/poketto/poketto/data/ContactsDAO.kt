@@ -38,19 +38,18 @@ class ContactsDAO(context: Context) {
         try {
             open()
 
-            val select = arrayOf(ContactContract.Entry._ID)
+            val select = arrayOf(ContactContract.Entry.ADDRESS)
             val cursor = database!!.query(
                 ContactContract.Entry.TABLE_NAME,
                 select,
                 select[0] + " = ?",
-                arrayOf("" + contact.contact_id),
+                arrayOf("" + contact.address),
                 null,
                 null,
                 null
             )
 
             val exists = cursor.count > 0
-            Log.d("ContactsDAO exists: ", exists.toString())
 
             cursor.close()
 
@@ -62,12 +61,12 @@ class ContactsDAO(context: Context) {
             values.put(ContactContract.Entry.NAME, contact.name)
 
             if (exists) {
-                database!!.update(ContactContract.Entry.TABLE_NAME, values, select[0] + " = ?", arrayOf("" + contact.contact_id))
+                database!!.update(ContactContract.Entry.TABLE_NAME, values, select[0] + " = ?", arrayOf("" + contact.address))
             } else {
                 database!!.insert(ContactContract.Entry.TABLE_NAME, null, values)
             }
         } catch (e: SQLiteException) {
-            Log.d("ContactsDAO exception: ", e.localizedMessage)
+            Log.d("ContactsDAO exception", e.localizedMessage)
         } finally {
             close()
         }
@@ -75,7 +74,7 @@ class ContactsDAO(context: Context) {
 
     fun getContactBy(address: String): Contact? {
 
-        var contact: Contact
+        val contact: Contact
 
         val projection = arrayOf(
             ContactContract.Entry._ID,
@@ -115,8 +114,10 @@ class ContactsDAO(context: Context) {
         } catch (e: SQLiteException) {
             Log.d("ContactsDAO exception: ", e.localizedMessage)
             e.printStackTrace()
+        } finally {
+            close()
         }
-        close()
+
         return null
     }
 
@@ -159,10 +160,11 @@ class ContactsDAO(context: Context) {
                 result.add(contact)
             }
             cursor.close()
-            close()
         } catch (e: SQLiteException) {
             Log.d("ContactsDAO exception: ", e.localizedMessage)
             e.printStackTrace()
+        } finally {
+            close()
         }
 
         return result

@@ -79,13 +79,16 @@ class ContactsActivity: AppCompatActivity() {
 
             val contactModel = filteredContactModelArrayList!!.get(position)
             val contact = Contact()
-            contact.address = address
+            contact.address = address!!.toUpperCase()
             contact.name = contactModel.name
 
             if(contactModel.number != null) {
                 val contactId = phoneContactUtils!!.fetchContactIdFromPhoneNumber(contactModel.number!!)
                 val contactImageUri = phoneContactUtils!!.getPhotoUri(contactId.toLong())
-                contact.avatar_url = contactImageUri.toString()
+                if(contactImageUri != null) {
+                    contact.avatar_url = contactImageUri.toString()
+                    Log.d("contact save avatar_url", contact.avatar_url)
+                }
                 contact.contact_id = contactId
             }
             Log.d("contact save id", contact.contact_id)

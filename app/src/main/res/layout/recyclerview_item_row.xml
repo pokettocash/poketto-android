@@ -2,12 +2,14 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="60dp" xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/itemImage"
             android:layout_width="34dp"
             android:layout_height="34dp"
+            android:scaleType="fitCenter"
+            app:riv_corner_radius="17dip"
             android:src="@drawable/pay_unknown"
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"/>

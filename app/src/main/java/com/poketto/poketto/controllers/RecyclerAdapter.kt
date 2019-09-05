@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import com.google.gson.Gson
-import com.poketto.poketto.R
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
+import android.net.Uri
+import com.poketto.poketto.R
+
 
 class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private val ownerAddress: String): RecyclerView.Adapter<RecyclerAdapter.TransactionHolder>() {
 
@@ -62,7 +64,7 @@ class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private 
             } else {
                 view.address.text = transaction.from
                 view.amount.text = "+ $formattedDaiString"
-                view.amount.setTextColor(ContextCompat.getColor(itemView.context, R.color.colorAccent))
+                view.amount.setTextColor(ContextCompat.getColor(itemView.context, com.poketto.poketto.R.color.colorAccent))
             }
 
             if(transaction.displayName != null) {
@@ -70,6 +72,11 @@ class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private 
                 view.address.text = ""
             }
 
+            if(transaction.displayImage != null) {
+                view.itemImage!!.setImageURI(Uri.parse(transaction.displayImage))
+            } else {
+                view.itemImage!!.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.pay_unknown))
+            }
         }
 
     }

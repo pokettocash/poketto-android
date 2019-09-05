@@ -21,4 +21,5 @@ class Transaction {
     val hash : String? = null
     val blockNumber : String? = null
     var displayName : String? = null
+    var displayImage : String? = null
 }

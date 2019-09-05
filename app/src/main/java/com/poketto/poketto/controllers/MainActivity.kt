@@ -49,8 +49,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         contactsDAO = ContactsDAO(this)
-        val contacts = contactsDAO!!.getContacts()
-        Log.d("contacts: ", contacts.size.toString())
 
         linearLayoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = linearLayoutManager
@@ -144,6 +142,10 @@ class MainActivity : AppCompatActivity() {
             Log.d("balance", "dai balance: " + dai)
 
             uiThread {
+
+                val serializedTransactions = getSerializedTransactionsWithContactInfo(transactionsList, address)
+                transactionsList.clear()
+                transactionsList.addAll(serializedTransactions.reversed())
 
                 adapter = RecyclerAdapter(transactionsList, address)
                 recyclerView.adapter = adapter
@@ -290,27 +292,13 @@ class MainActivity : AppCompatActivity() {
                             empty_state_view.visibility = View.VISIBLE
                         }
 
-                        val serializedTransactions = arrayListOf<Transaction>()
-
-                        for(transaction in transactions.result) {
-                            val ownerAddress = Wallet(this@MainActivity).getAddress()
-                            var othersAddress = transaction.to
-                            if(transaction.to!!.toUpperCase() == ownerAddress!!.toUpperCase()) {
-                                othersAddress = transaction.from
-
-                            }
-                            val contact = contactsDAO!!.getContactBy(othersAddress!!)
-                            if(contact != null) {
-                                transaction.displayName = contact.name
-                            }
-                            serializedTransactions.add(transaction)
-                        }
-
+                        val serializedTransactions = getSerializedTransactionsWithContactInfo(transactions.result, address)
 
                         runOnUiThread {
                             transactionsList.clear()
                             transactionsList.addAll(serializedTransactions.reversed())
-                            adapter.notifyItemInserted(transactionsList.size)
+                            adapter.notifyItemInserted(serializedTransactions.size)
+                            adapter.notifyDataSetChanged()
                         }
                     }
                 }
@@ -324,6 +312,28 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    fun getSerializedTransactionsWithContactInfo(transactions: List<Transaction>, ownerAddress: String): ArrayList<Transaction> {
+
+        val serializedTransactions = arrayListOf<Transaction>()
+
+        for(transaction in transactions) {
+            var othersAddress = transaction.to
+            if(transaction.to!!.toUpperCase() == ownerAddress!!.toUpperCase()) {
+                othersAddress = transaction.from!!.toUpperCase()
+            }
+
+            val contact = contactsDAO!!.getContactBy(othersAddress!!)
+            if(contact != null) {
+                transaction.displayName = contact.name
+                if(contact.avatar_url != null) {
+                    transaction.displayImage = contact.avatar_url
+                }
+            }
+            serializedTransactions.add(transaction)
+        }
+
+        return serializedTransactions
+    }
 
 
 }
