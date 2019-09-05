@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.google.gson.Gson
+import com.poketto.poketto.R
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_payment_details.*
 import java.text.SimpleDateFormat
@@ -24,7 +25,7 @@ class PaymentDetailsActivity: AppCompatActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.poketto.poketto.R.layout.activity_payment_details)
+        setContentView(R.layout.activity_payment_details)
 
         val transactionJson = intent.getStringExtra("TRANSACTION")
         val transaction = Gson().fromJson(transactionJson, Transaction::class.java)
@@ -36,7 +37,7 @@ class PaymentDetailsActivity: AppCompatActivity()  {
             otherAddress = transaction.from!!
         }
 
-        val toolbar = findViewById<android.support.v7.widget.Toolbar>(com.poketto.poketto.R.id.toolbar)
+        val toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(true)
         supportActionBar!!.title = "Payment details"
@@ -69,17 +70,21 @@ class PaymentDetailsActivity: AppCompatActivity()  {
             }
         }
 
+        if(transaction.displayName != null) {
+            assign_address_button.text = this.resources.getString(R.string.reassign_address)
+        }
+
         val formattedDaiString = String.format("%.2f", transaction.value!!.toFloat() / weiToDaiRate)
         value!!.text = formattedDaiString
 
         if(transaction.from == ownerAddress) {
             address_text_view.text = transaction.to
-            recipient_text_view.text = this.resources.getString(com.poketto.poketto.R.string.to)
-            sent_text_view.text = this.resources.getString(com.poketto.poketto.R.string.sent)
+            recipient_text_view.text = this.resources.getString(R.string.to)
+            sent_text_view.text = this.resources.getString(R.string.sent)
         } else {
             address_text_view.text = transaction.from
-            recipient_text_view.text = this.resources.getString(com.poketto.poketto.R.string.from)
-            sent_text_view.text = this.resources.getString(com.poketto.poketto.R.string.received)
+            recipient_text_view.text = this.resources.getString(R.string.from)
+            sent_text_view.text = this.resources.getString(R.string.received)
         }
 
         date_text_view.text = getDateTime(transaction.timeStamp!!)

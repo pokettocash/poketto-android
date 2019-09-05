@@ -64,7 +64,7 @@ class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private 
             } else {
                 view.address.text = transaction.from
                 view.amount.text = "+ $formattedDaiString"
-                view.amount.setTextColor(ContextCompat.getColor(itemView.context, com.poketto.poketto.R.color.colorAccent))
+                view.amount.setTextColor(ContextCompat.getColor(itemView.context, R.color.colorAccent))
             }
 
             if(transaction.displayName != null) {
