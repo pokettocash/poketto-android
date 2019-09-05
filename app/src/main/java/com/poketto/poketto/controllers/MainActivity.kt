@@ -149,6 +149,8 @@ class MainActivity : AppCompatActivity() {
 
                 adapter = RecyclerAdapter(transactionsList, address)
                 recyclerView.adapter = adapter
+                adapter.notifyDataSetChanged()
+
 
                 val formattedDaiString = String.format("%.2f", dai)
                 balanceTextView!!.text = "$formattedDaiString xDai"

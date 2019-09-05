@@ -3,15 +3,18 @@ package com.poketto.poketto.controllers
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.Toast
 import com.google.gson.Gson
 import com.poketto.poketto.R
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_payment_details.*
+import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -70,10 +73,6 @@ class PaymentDetailsActivity: AppCompatActivity()  {
             }
         }
 
-        if(transaction.displayName != null) {
-            assign_address_button.text = this.resources.getString(R.string.reassign_address)
-        }
-
         val formattedDaiString = String.format("%.2f", transaction.value!!.toFloat() / weiToDaiRate)
         value!!.text = formattedDaiString
 
@@ -89,6 +88,20 @@ class PaymentDetailsActivity: AppCompatActivity()  {
 
         date_text_view.text = getDateTime(transaction.timeStamp!!)
         hours_text_view.text = getHourTime(transaction.timeStamp)
+
+        if(transaction.displayName != null) {
+            assign_address_button.text = this.resources.getString(R.string.reassign_address)
+            name_text_view.text = transaction.displayName
+            name_text_view.visibility = View.VISIBLE
+            address_text_view.text = String.format("%s...", address_text_view.text.take(10))
+        }
+
+        if(transaction.displayImage != null) {
+            receiver_image.setImageURI(Uri.parse(transaction.displayImage))
+        } else {
+            receiver_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.pay_unknown))
+        }
+
     }
 
     override
