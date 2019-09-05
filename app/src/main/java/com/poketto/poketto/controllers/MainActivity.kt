@@ -98,6 +98,10 @@ class MainActivity : AppCompatActivity() {
             showSettingsModal()
         }
 
+        swipe_refresh.setOnRefreshListener {
+            updateWallet()
+        }
+
         balanceTextView = findViewById(R.id.balance_value)
     }
 
@@ -301,6 +305,7 @@ class MainActivity : AppCompatActivity() {
                             transactionsList.addAll(serializedTransactions.reversed())
                             adapter.notifyItemInserted(serializedTransactions.size)
                             adapter.notifyDataSetChanged()
+                            swipe_refresh.isRefreshing = false
                         }
                     }
                 }
