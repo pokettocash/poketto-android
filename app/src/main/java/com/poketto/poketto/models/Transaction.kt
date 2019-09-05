@@ -20,4 +20,5 @@ class Transaction {
     val confirmations : String? = null
     val hash : String? = null
     val blockNumber : String? = null
+    var displayName : String? = null
 }

@@ -30,6 +30,7 @@ import com.poketto.poketto.R
 import com.poketto.poketto.data.ContactsDAO
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.recyclerview_item_row.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -288,9 +289,27 @@ class MainActivity : AppCompatActivity() {
                         if(transactions.result.isEmpty()) {
                             empty_state_view.visibility = View.VISIBLE
                         }
+
+                        val serializedTransactions = arrayListOf<Transaction>()
+
+                        for(transaction in transactions.result) {
+                            val ownerAddress = Wallet(this@MainActivity).getAddress()
+                            var othersAddress = transaction.to
+                            if(transaction.to!!.toUpperCase() == ownerAddress!!.toUpperCase()) {
+                                othersAddress = transaction.from
+
+                            }
+                            val contact = contactsDAO!!.getContactBy(othersAddress!!)
+                            if(contact != null) {
+                                transaction.displayName = contact.name
+                            }
+                            serializedTransactions.add(transaction)
+                        }
+
+
                         runOnUiThread {
                             transactionsList.clear()
-                            transactionsList.addAll(transactions.result.reversed())
+                            transactionsList.addAll(serializedTransactions.reversed())
                             adapter.notifyItemInserted(transactionsList.size)
                         }
                     }

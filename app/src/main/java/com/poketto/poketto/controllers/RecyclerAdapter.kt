@@ -64,6 +64,12 @@ class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private 
                 view.amount.text = "+ $formattedDaiString"
                 view.amount.setTextColor(ContextCompat.getColor(itemView.context, R.color.colorAccent))
             }
+
+            if(transaction.displayName != null) {
+                view.contact.text = transaction.displayName
+                view.address.text = ""
+            }
+
         }
 
     }

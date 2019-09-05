@@ -73,6 +73,53 @@ class ContactsDAO(context: Context) {
         }
     }
 
+    fun getContactBy(address: String): Contact? {
+
+        var contact: Contact
+
+        val projection = arrayOf(
+            ContactContract.Entry._ID,
+            ContactContract.Entry.ADDRESS,
+            ContactContract.Entry.AVATAR_URL,
+            ContactContract.Entry.CONTACT_ID,
+            ContactContract.Entry.NAME
+        )
+
+        try {
+            open()
+
+            val cursor = database!!.query(
+                ContactContract.Entry.TABLE_NAME,
+                projection,
+                projection[1] + " = ?",
+                arrayOf("" + address),
+                null,
+                null,
+                null
+            )
+
+
+            Log.d("ContactsDAO cursor: ", cursor.toString())
+
+            if (cursor.moveToNext()) {
+                Log.d("ContactsDAO", "moveToNext")
+                contact = Contact()
+                contact.contact_id = cursor.getString(cursor.getColumnIndex(ContactContract.Entry.CONTACT_ID))
+                contact.address = cursor.getString(cursor.getColumnIndex(ContactContract.Entry.ADDRESS))
+                contact.avatar_url = cursor.getString(cursor.getColumnIndex(ContactContract.Entry.AVATAR_URL))
+                contact.name = cursor.getString(cursor.getColumnIndex(ContactContract.Entry.NAME))
+                cursor.close()
+                close()
+                return contact
+            }
+        } catch (e: SQLiteException) {
+            Log.d("ContactsDAO exception: ", e.localizedMessage)
+            e.printStackTrace()
+        }
+        close()
+        return null
+    }
+
     fun getContacts(): ArrayList<Contact> {
 
         var contact: Contact
