@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import com.google.gson.Gson
 import com.poketto.poketto.R
+import com.poketto.poketto.data.Contact
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_payment_details.*
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
@@ -62,6 +63,15 @@ class PaymentDetailsActivity: AppCompatActivity()  {
         send_new_payment_button.setOnClickListener {
             val paymentSendIntent = Intent(this, PaymentSendActivity::class.java)
             paymentSendIntent.putExtra("address", otherAddress)
+            if(transaction.displayName != null) {
+                val contact = Contact()
+                contact.address = otherAddress
+                contact.name = transaction.displayName
+                if(transaction.displayImage != null) {
+                    contact.avatar_url = transaction.displayImage
+                }
+                paymentSendIntent.putExtra("contact", Gson().toJson(contact))
+            }
             startActivity(paymentSendIntent)
         }
 
