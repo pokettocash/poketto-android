@@ -39,6 +39,11 @@ class PaymentSendActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(true)
         supportActionBar!!.title = "Send Payment"
+        val address = Wallet(this).getAddress()
+        val balance = Wallet(this).balanceFrom(address!!)
+        val formattedDaiString = String.format("%.2f", balance)
+        supportActionBar!!.subtitle = "Balance $formattedDaiString xDai"
+
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {
@@ -62,8 +67,6 @@ class PaymentSendActivity : AppCompatActivity() {
         val maxButton = findViewById<Button>(R.id.send_max_button)
         maxButton!!.setOnClickListener {
             val transactionCost = 0.000021F
-            val address = Wallet(this).getAddress()
-            val balance = Wallet(this).balanceFrom(address!!)
             val maxAmount = String.format("%f", balance-transactionCost)
             amountEditText!!.setText(maxAmount)
             maxButton.setTextColor(Color.parseColor("#216BFE"))
