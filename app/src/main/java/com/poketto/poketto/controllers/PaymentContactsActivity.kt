@@ -135,7 +135,12 @@ class PaymentContactsActivity : AppCompatActivity() {
 
         var fromTransactions : ArrayList<String> = arrayListOf()
         for(transaction in transactions.result) {
-            fromTransactions.add(transaction.from!!)
+            val filteredToTransactions = ArrayList(toTransactions.toList().filter { it.toUpperCase() == transaction.from!!.toUpperCase() })
+            Log.d("filteredToTransactions", "filteredToTransactions: " + filteredToTransactions)
+
+            if(filteredToTransactions.isEmpty()) {
+                fromTransactions.add(transaction.from!!)
+            }
         }
 
         toTransactions = ArrayList(toTransactions.toList().filterNot { it.toUpperCase() == ownerAddress.toUpperCase() })
@@ -143,57 +148,36 @@ class PaymentContactsActivity : AppCompatActivity() {
 
         val allTransactions = toTransactions
         allTransactions.addAll(fromTransactions)
-
-        val uniqueToTransactions = toTransactions.distinct()
-        Log.d("uniqueToTransactions", "uniqueToTransactions: " + uniqueToTransactions)
-
-        val uniqueFromTransactions = fromTransactions.distinct()
-        Log.d("uniqueFromTransactions", "uniqueFromTransactions: " + uniqueFromTransactions)
+        allTransactions.addAll(toTransactions)
 
 
-        for(toTransaction in uniqueToTransactions) {
+        val uniqueTransactions = allTransactions.distinct()
+        Log.d("uniqueTransactions", "uniqueTransactions: " + uniqueTransactions)
+
+
+        for(transaction in uniqueTransactions) {
             if(paymentContactsArray.isEmpty()) {
-                val paymentContact = addContact(toTransaction)
+                val paymentContact = addContact(transaction)
                 paymentContactsArray.add(paymentContact)
             } else {
-                var filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == toTransaction.toUpperCase() }
+                var filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == transaction.toUpperCase() }
                 if(filteredContacts.isEmpty()) {
-                    val contact = ContactsDAO(this).getContactBy(toTransaction.toUpperCase())
+                    val contact = ContactsDAO(this).getContactBy(transaction.toUpperCase())
                     filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == contact?.address?.toUpperCase() }
                     if(filteredContacts.isEmpty()) {
-                        val paymentContact = addContact(toTransaction)
+                        val paymentContact = addContact(transaction)
                         paymentContactsArray.add(paymentContact)
                     }
                 } else {
-                    val paymentContact = addContact(toTransaction)
+                    val paymentContact = addContact(transaction)
                     paymentContactsArray.add(paymentContact)
                 }
             }
         }
 
-        for(fromTransaction in uniqueFromTransactions) {
-            if(paymentContactsArray.isEmpty()) {
-                val paymentContact = addContact(fromTransaction)
-                paymentContactsArray.add(paymentContact)
-            } else {
-                var filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == fromTransaction.toUpperCase() }
-                if(filteredContacts.isEmpty()) {
-                    val contact = ContactsDAO(this).getContactBy(fromTransaction.toUpperCase())
-                    filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == contact?.address?.toUpperCase() }
-                    if(filteredContacts.isEmpty()) {
-                        val paymentContact = addContact(fromTransaction)
-                        paymentContactsArray.add(paymentContact)
-                    }
-                } else {
-                    val paymentContact = addContact(fromTransaction)
-                    paymentContactsArray.add(paymentContact)
-                }
-            }
-        }
 
         filteredPaymentContacts = paymentContactsArray
         Log.d("filteredPaymentContacts", "filteredPaymentContacts: " + filteredPaymentContacts)
-
     }
 
     fun addContact(address: String): Contact {
