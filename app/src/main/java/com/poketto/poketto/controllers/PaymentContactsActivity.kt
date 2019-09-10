@@ -23,6 +23,8 @@ class PaymentContactsActivity : AppCompatActivity() {
 
     val QRCODE = 1002
     var filteredPaymentContacts : ArrayList<Contact>? = null
+    var popularPaymentContacts : ArrayList<Contact>? = null
+
     lateinit var transactions : Transactions
     lateinit var ownerAddress : String
 
@@ -127,6 +129,7 @@ class PaymentContactsActivity : AppCompatActivity() {
     fun setPaymentContacts() {
 
         val paymentContactsArray : ArrayList<Contact> = arrayListOf()
+        val popularContactsArray : ArrayList<Contact> = arrayListOf()
 
         var toTransactions : ArrayList<String> = arrayListOf()
         for(transaction in transactions.result) {
@@ -135,12 +138,7 @@ class PaymentContactsActivity : AppCompatActivity() {
 
         var fromTransactions : ArrayList<String> = arrayListOf()
         for(transaction in transactions.result) {
-            val filteredToTransactions = ArrayList(toTransactions.toList().filter { it.toUpperCase() == transaction.from!!.toUpperCase() })
-            Log.d("filteredToTransactions", "filteredToTransactions: " + filteredToTransactions)
-
-            if(filteredToTransactions.isEmpty()) {
-                fromTransactions.add(transaction.from!!)
-            }
+            fromTransactions.add(transaction.from!!)
         }
 
         toTransactions = ArrayList(toTransactions.toList().filterNot { it.toUpperCase() == ownerAddress.toUpperCase() })
@@ -148,11 +146,14 @@ class PaymentContactsActivity : AppCompatActivity() {
 
         val allTransactions = toTransactions
         allTransactions.addAll(fromTransactions)
-        allTransactions.addAll(toTransactions)
+        Log.d("allTransactions", "allTransactions: " + allTransactions)
 
 
         val uniqueTransactions = allTransactions.distinct()
         Log.d("uniqueTransactions", "uniqueTransactions: " + uniqueTransactions)
+
+        val popularTransactions = allTransactions.groupBy { it }.filter { it.component2().size > 1 }.keys
+        Log.d("popularTransactions", "popularTransactions: " + popularTransactions)
 
 
         for(transaction in uniqueTransactions) {
@@ -175,9 +176,31 @@ class PaymentContactsActivity : AppCompatActivity() {
             }
         }
 
+        for(transaction in popularTransactions) {
+            if(popularContactsArray.isEmpty()) {
+                val paymentContact = addContact(transaction)
+                popularContactsArray.add(paymentContact)
+            } else {
+                var filteredContacts = popularContactsArray.filter { it.address!!.toUpperCase() == transaction.toUpperCase() }
+                if(filteredContacts.isEmpty()) {
+                    val contact = ContactsDAO(this).getContactBy(transaction.toUpperCase())
+                    filteredContacts = popularContactsArray.filter { it.address!!.toUpperCase() == contact?.address?.toUpperCase() }
+                    if(filteredContacts.isEmpty()) {
+                        val paymentContact = addContact(transaction)
+                        popularContactsArray.add(paymentContact)
+                    }
+                } else {
+                    val paymentContact = addContact(transaction)
+                    popularContactsArray.add(paymentContact)
+                }
+            }
+        }
+
 
         filteredPaymentContacts = paymentContactsArray
         Log.d("filteredPaymentContacts", "filteredPaymentContacts: " + filteredPaymentContacts)
+        popularPaymentContacts = popularContactsArray
+        Log.d("popularPaymentContacts", "popularPaymentContacts: " + popularPaymentContacts)
     }
 
     fun addContact(address: String): Contact {
