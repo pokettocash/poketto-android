@@ -7,19 +7,24 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_payment_contacts.*
 import android.Manifest.permission
-import android.app.Activity
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.widget.Toast
-import org.jetbrains.anko.startActivity
+import com.google.gson.Gson
+import com.poketto.poketto.data.Contact
+import com.poketto.poketto.data.ContactsDAO
+import com.poketto.poketto.models.Transactions
 
 const val CAMERA_PERMISSION = 1001
 
 class PaymentContactsActivity : AppCompatActivity() {
 
     val QRCODE = 1002
+    var filteredPaymentContacts : ArrayList<Contact>? = null
+    lateinit var transactions : Transactions
+    lateinit var ownerAddress : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,11 @@ class PaymentContactsActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             finish()
         }
+
+        val transactionJson = intent.getStringExtra("TRANSACTIONS")
+        transactions = Gson().fromJson(transactionJson, Transactions::class.java)
+        ownerAddress = intent.getStringExtra("ownerAddress")
+
 
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
 
@@ -70,6 +80,8 @@ class PaymentContactsActivity : AppCompatActivity() {
                 startActivityForResult(intent, QRCODE)
             }
         }
+
+        setPaymentContacts()
     }
 
     override
@@ -110,5 +122,93 @@ class PaymentContactsActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun setPaymentContacts() {
+
+        val paymentContactsArray : ArrayList<Contact> = arrayListOf()
+
+        var toTransactions : ArrayList<String> = arrayListOf()
+        for(transaction in transactions.result) {
+            toTransactions.add(transaction.to!!)
+        }
+
+        var fromTransactions : ArrayList<String> = arrayListOf()
+        for(transaction in transactions.result) {
+            fromTransactions.add(transaction.from!!)
+        }
+
+        toTransactions = ArrayList(toTransactions.toList().filterNot { it.toUpperCase() == ownerAddress.toUpperCase() })
+        fromTransactions = ArrayList(fromTransactions.toList().filterNot { it.toUpperCase() == ownerAddress.toUpperCase() })
+
+        val allTransactions = toTransactions
+        allTransactions.addAll(fromTransactions)
+
+        val uniqueToTransactions = toTransactions.distinct()
+        Log.d("uniqueToTransactions", "uniqueToTransactions: " + uniqueToTransactions)
+
+        val uniqueFromTransactions = fromTransactions.distinct()
+        Log.d("uniqueFromTransactions", "uniqueFromTransactions: " + uniqueFromTransactions)
+
+
+        for(toTransaction in uniqueToTransactions) {
+            if(paymentContactsArray.isEmpty()) {
+                val paymentContact = addContact(toTransaction)
+                paymentContactsArray.add(paymentContact)
+            } else {
+                var filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == toTransaction.toUpperCase() }
+                if(filteredContacts.isEmpty()) {
+                    val contact = ContactsDAO(this).getContactBy(toTransaction.toUpperCase())
+                    filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == contact?.address?.toUpperCase() }
+                    if(filteredContacts.isEmpty()) {
+                        val paymentContact = addContact(toTransaction)
+                        paymentContactsArray.add(paymentContact)
+                    }
+                } else {
+                    val paymentContact = addContact(toTransaction)
+                    paymentContactsArray.add(paymentContact)
+                }
+            }
+        }
+
+        for(fromTransaction in uniqueFromTransactions) {
+            if(paymentContactsArray.isEmpty()) {
+                val paymentContact = addContact(fromTransaction)
+                paymentContactsArray.add(paymentContact)
+            } else {
+                var filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == fromTransaction.toUpperCase() }
+                if(filteredContacts.isEmpty()) {
+                    val contact = ContactsDAO(this).getContactBy(fromTransaction.toUpperCase())
+                    filteredContacts = paymentContactsArray.filter { it.address!!.toUpperCase() == contact?.address?.toUpperCase() }
+                    if(filteredContacts.isEmpty()) {
+                        val paymentContact = addContact(fromTransaction)
+                        paymentContactsArray.add(paymentContact)
+                    }
+                } else {
+                    val paymentContact = addContact(fromTransaction)
+                    paymentContactsArray.add(paymentContact)
+                }
+            }
+        }
+
+        filteredPaymentContacts = paymentContactsArray
+        Log.d("filteredPaymentContacts", "filteredPaymentContacts: " + filteredPaymentContacts)
+
+    }
+
+    fun addContact(address: String): Contact {
+        val paymentContact = Contact()
+
+        val contact = ContactsDAO(this).getContactBy(address)
+        if (contact != null) {
+            paymentContact.address = address
+            paymentContact.name = contact.name
+            paymentContact.contact_id = contact.contact_id
+        } else {
+            paymentContact.address = address
+            paymentContact.name = address
+        }
+
+        return paymentContact
     }
 }

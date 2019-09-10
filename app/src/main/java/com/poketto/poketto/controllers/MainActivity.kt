@@ -25,6 +25,7 @@ import android.net.Uri
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.widget.*
+import com.google.gson.Gson
 import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
 import com.poketto.poketto.data.ContactsDAO
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: RecyclerAdapter
     private var transactionsList = ArrayList<Transaction>()
     private var contactsDAO : ContactsDAO? = null
+    private lateinit var ownerAddress : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +89,10 @@ class MainActivity : AppCompatActivity() {
         payButton.text = payButtonLabel
         payButton.setOnClickListener {
             val intent = Intent(this, PaymentContactsActivity::class.java)
+            val transactions = Transactions()
+            transactions.result = transactionsList
+            intent.putExtra("TRANSACTIONS", Gson().toJson(transactions))
+            intent.putExtra("ownerAddress", ownerAddress)
             startActivity(intent)
         }
 
@@ -138,20 +144,20 @@ class MainActivity : AppCompatActivity() {
     private fun updateWallet() {
 
         doAsync {
-            val address = Wallet(this@MainActivity).getAddress()
+            ownerAddress = Wallet(this@MainActivity).getAddress()!!
 
 
-            Log.d("updateWallet", "address: " + address)
-            val dai = Wallet(this@MainActivity).balanceFrom(address!!)
+            Log.d("updateWallet", "address: " + ownerAddress)
+            val dai = Wallet(this@MainActivity).balanceFrom(ownerAddress)
             Log.d("balance", "dai balance: " + dai)
 
             uiThread {
 
-                val serializedTransactions = getSerializedTransactionsWithContactInfo(transactionsList, address)
+                val serializedTransactions = getSerializedTransactionsWithContactInfo(transactionsList, ownerAddress)
                 transactionsList.clear()
                 transactionsList.addAll(serializedTransactions.reversed())
 
-                adapter = RecyclerAdapter(transactionsList, address)
+                adapter = RecyclerAdapter(transactionsList, ownerAddress)
                 recyclerView.adapter = adapter
                 adapter.notifyDataSetChanged()
 
@@ -160,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                 balanceTextView!!.text = "$formattedDaiString xDai"
 
                 Log.d("transactionsFrom", "transactionsFrom")
-                transactionsFrom(address)
+                transactionsFrom(ownerAddress)
             }
         }
     }
