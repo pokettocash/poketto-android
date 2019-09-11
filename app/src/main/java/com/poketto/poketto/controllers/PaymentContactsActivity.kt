@@ -10,20 +10,25 @@ import android.Manifest.permission
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
 import com.poketto.poketto.data.Contact
 import com.poketto.poketto.data.ContactsDAO
 import com.poketto.poketto.models.Transactions
+import com.poketto.poketto.utils.PhoneContactUtils
 
 const val CAMERA_PERMISSION = 1001
 
 class PaymentContactsActivity : AppCompatActivity() {
 
     val QRCODE = 1002
-    var filteredPaymentContacts : ArrayList<Contact>? = null
-    var popularPaymentContacts : ArrayList<Contact>? = null
+    private var phoneContactUtils: PhoneContactUtils = PhoneContactUtils(this)
+    private lateinit var filteredPaymentContacts : ArrayList<Contact>
+    private lateinit var popularPaymentContacts : ArrayList<Contact>
+    private lateinit var adapter: RecentContactsAdapter
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     lateinit var transactions : Transactions
     lateinit var ownerAddress : String
@@ -31,6 +36,9 @@ class PaymentContactsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.poketto.poketto.R.layout.activity_payment_contacts)
+
+        linearLayoutManager = LinearLayoutManager(this)
+        recent_list.layoutManager = linearLayoutManager
 
         val toolbar = findViewById<android.support.v7.widget.Toolbar>(com.poketto.poketto.R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -201,6 +209,11 @@ class PaymentContactsActivity : AppCompatActivity() {
         Log.d("filteredPaymentContacts", "filteredPaymentContacts: " + filteredPaymentContacts)
         popularPaymentContacts = popularContactsArray
         Log.d("popularPaymentContacts", "popularPaymentContacts: " + popularPaymentContacts)
+
+        adapter = RecentContactsAdapter(filteredPaymentContacts, phoneContactUtils, ownerAddress)
+        recent_list.adapter = adapter
+        adapter.notifyDataSetChanged()
+
     }
 
     fun addContact(address: String): Contact {

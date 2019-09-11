@@ -48,5 +48,6 @@
     <string name="scan_send_payment">Scan to send a payment</string>
     <string name="scan_send_payment_description">You can scan a QR code to send xDai to another wallet</string>
     <string name="search_contacts">Search Contacts</string>
+    <string name="recent">Recent</string>
 
 </resources>

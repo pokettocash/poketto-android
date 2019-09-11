@@ -1,7 +1,6 @@
 package com.poketto.poketto.controllers
 
 import android.content.Intent
-import android.net.Uri
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -10,15 +9,18 @@ import android.view.ViewGroup
 import com.google.gson.Gson
 import com.poketto.poketto.R
 import com.poketto.poketto.data.Contact
+import com.poketto.poketto.utils.PhoneContactUtils
+import kotlinx.android.synthetic.main.recent_contact_item_row.view.*
 
 
-class RecentContactsAdapter(private val contacts: ArrayList<Contact>, private val ownerAddress: String): RecyclerView.Adapter<RecentContactsAdapter.ContactHolder>() {
+class RecentContactsAdapter(private val contacts: ArrayList<Contact>, private val phoneContactUtils : PhoneContactUtils,
+                            private val ownerAddress: String): RecyclerView.Adapter<RecentContactsAdapter.ContactHolder>() {
 
     override fun getItemCount() = contacts.size
 
     override fun onBindViewHolder(holder: ContactHolder, position: Int) {
         val itemContact = contacts[position]
-        holder.bindContact(itemContact, ownerAddress)
+        holder.bindContact(itemContact, phoneContactUtils, ownerAddress)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactHolder {
@@ -30,7 +32,6 @@ class RecentContactsAdapter(private val contacts: ArrayList<Contact>, private va
 
         private var view: View = v
         private var contact: Contact? = null
-        private val weiToDaiRate = 1000000000000000000
         private var ownerAddress: String? = null
 
         init {
@@ -51,31 +52,22 @@ class RecentContactsAdapter(private val contacts: ArrayList<Contact>, private va
             private val CONTACT_KEY = "CONTACT"
         }
 
-        fun bindContact(contact: Contact, ownerAddress: String) {
+        fun bindContact(contact: Contact, phoneContactUtils : PhoneContactUtils, ownerAddress: String) {
             this.contact = contact
             this.ownerAddress = ownerAddress
 
-//            val formattedDaiString = String.format("%.2f", transaction.value!!.toDouble()/weiToDaiRate)
-//
-//            if(transaction.from == ownerAddress) {
-//                view.address.text = transaction.to
-//                view.amount.text = "$formattedDaiString"
-//            } else {
-//                view.address.text = transaction.from
-//                view.amount.text = "+ $formattedDaiString"
-//                view.amount.setTextColor(ContextCompat.getColor(itemView.context, R.color.colorAccent))
-//            }
-//
-//            if(transaction.displayName != null) {
-//                view.contact.text = transaction.displayName
-//                view.address.text = ""
-//            }
-//
-//            if(transaction.displayImage != null) {
-//                view.itemImage!!.setImageURI(Uri.parse(transaction.displayImage))
-//            } else {
-//                view.itemImage!!.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.pay_unknown))
-//            }
+            view.contact.text = contact.name
+
+            if(contact.contact_id != null) {
+                val contactImageUri = phoneContactUtils.getPhotoUri(contact.contact_id!!.toLong())
+                if(contactImageUri != null) {
+                    view.itemImage.setImageURI(contactImageUri)
+                } else {
+                    view.itemImage!!.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.pay_unknown))
+                }
+            } else {
+                view.itemImage!!.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.pay_unknown))
+            }
         }
 
     }

@@ -31,7 +31,6 @@ import com.poketto.poketto.R
 import com.poketto.poketto.data.ContactsDAO
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.recyclerview_item_row.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
