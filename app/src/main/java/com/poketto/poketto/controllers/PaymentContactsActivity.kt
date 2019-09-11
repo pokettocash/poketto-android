@@ -27,8 +27,11 @@ class PaymentContactsActivity : AppCompatActivity() {
     private var phoneContactUtils: PhoneContactUtils = PhoneContactUtils(this)
     private lateinit var filteredPaymentContacts : ArrayList<Contact>
     private lateinit var popularPaymentContacts : ArrayList<Contact>
-    private lateinit var adapter: RecentContactsAdapter
+    private lateinit var recentContactsAdapter: RecentContactsAdapter
+    private lateinit var popularContactsAdapter: PopularContactsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var popularLinearLayoutManager: LinearLayoutManager
+
 
     lateinit var transactions : Transactions
     lateinit var ownerAddress : String
@@ -38,7 +41,9 @@ class PaymentContactsActivity : AppCompatActivity() {
         setContentView(com.poketto.poketto.R.layout.activity_payment_contacts)
 
         linearLayoutManager = LinearLayoutManager(this)
+        popularLinearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recent_list.layoutManager = linearLayoutManager
+        popular_list.layoutManager = popularLinearLayoutManager
 
         val toolbar = findViewById<android.support.v7.widget.Toolbar>(com.poketto.poketto.R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -210,9 +215,13 @@ class PaymentContactsActivity : AppCompatActivity() {
         popularPaymentContacts = popularContactsArray
         Log.d("popularPaymentContacts", "popularPaymentContacts: " + popularPaymentContacts)
 
-        adapter = RecentContactsAdapter(filteredPaymentContacts, phoneContactUtils, ownerAddress)
-        recent_list.adapter = adapter
-        adapter.notifyDataSetChanged()
+        recentContactsAdapter = RecentContactsAdapter(filteredPaymentContacts, phoneContactUtils, ownerAddress)
+        recent_list.adapter = recentContactsAdapter
+        recentContactsAdapter.notifyDataSetChanged()
+
+        popularContactsAdapter = PopularContactsAdapter(popularPaymentContacts, phoneContactUtils, ownerAddress)
+        popular_list.adapter = popularContactsAdapter
+        popularContactsAdapter.notifyDataSetChanged()
     }
 
     fun addContact(address: String): Contact {
