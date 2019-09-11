@@ -213,13 +213,12 @@ class PaymentContactsActivity : AppCompatActivity() {
         adapter = RecentContactsAdapter(filteredPaymentContacts, phoneContactUtils, ownerAddress)
         recent_list.adapter = adapter
         adapter.notifyDataSetChanged()
-
     }
 
     fun addContact(address: String): Contact {
         val paymentContact = Contact()
 
-        val contact = ContactsDAO(this).getContactBy(address)
+        val contact = ContactsDAO(this).getContactBy(address.toUpperCase())
         if (contact != null) {
             paymentContact.address = address
             paymentContact.name = contact.name
