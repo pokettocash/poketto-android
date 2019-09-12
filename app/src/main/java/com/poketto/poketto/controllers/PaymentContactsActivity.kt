@@ -12,6 +12,7 @@ import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.google.gson.Gson
 import com.poketto.poketto.data.Contact
@@ -222,6 +223,9 @@ class PaymentContactsActivity : AppCompatActivity() {
         popularContactsAdapter = PopularContactsAdapter(popularPaymentContacts, phoneContactUtils, ownerAddress)
         popular_list.adapter = popularContactsAdapter
         popularContactsAdapter.notifyDataSetChanged()
+        if(!popularContactsArray.isEmpty()) {
+            popular_layout.visibility = View.VISIBLE
+        }
     }
 
     fun addContact(address: String): Contact {
