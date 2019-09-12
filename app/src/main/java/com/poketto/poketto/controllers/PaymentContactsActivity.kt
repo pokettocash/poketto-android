@@ -13,12 +13,16 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
+import android.widget.SearchView
 import android.widget.Toast
 import com.google.gson.Gson
 import com.poketto.poketto.data.Contact
 import com.poketto.poketto.data.ContactsDAO
+import com.poketto.poketto.models.ContactModel
 import com.poketto.poketto.models.Transactions
 import com.poketto.poketto.utils.PhoneContactUtils
+import kotlinx.android.synthetic.main.activity_contacts.*
+import kotlinx.android.synthetic.main.activity_payment_contacts.searchBar
 
 const val CAMERA_PERMISSION = 1001
 
@@ -27,6 +31,7 @@ class PaymentContactsActivity : AppCompatActivity() {
     val QRCODE = 1002
     private var phoneContactUtils: PhoneContactUtils = PhoneContactUtils(this)
     private lateinit var filteredPaymentContacts : ArrayList<Contact>
+    private lateinit var recentPaymentContacts : ArrayList<Contact>
     private lateinit var popularPaymentContacts : ArrayList<Contact>
     private lateinit var recentContactsAdapter: RecentContactsAdapter
     private lateinit var popularContactsAdapter: PopularContactsAdapter
@@ -59,6 +64,36 @@ class PaymentContactsActivity : AppCompatActivity() {
         val transactionJson = intent.getStringExtra("TRANSACTIONS")
         transactions = Gson().fromJson(transactionJson, Transactions::class.java)
         ownerAddress = intent.getStringExtra("ownerAddress")
+
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                Log.d("onQueryTextChange: ", newText)
+                Log.d("onQueryTextChange: ", "recentPaymentContacts" + recentPaymentContacts)
+
+                val newContactsList = recentPaymentContacts.filter { l -> l.name!!.startsWith(newText) }
+                val newArrayList = arrayListOf<Contact>()
+                newArrayList.addAll(newContactsList)
+                updateList(newArrayList)
+                if(newText == "") {
+                    if(popularPaymentContacts.isNotEmpty()) {
+                        popular_layout.visibility = View.VISIBLE
+                    }
+                    clipboard_layout.visibility = View.VISIBLE
+                    scan_layout.visibility = View.VISIBLE
+                } else {
+                    clipboard_layout.visibility = View.GONE
+                    scan_layout.visibility = View.GONE
+                }
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                // task HERE
+                searchBar.clearFocus()
+                return false
+            }
+        })
 
 
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
@@ -211,8 +246,11 @@ class PaymentContactsActivity : AppCompatActivity() {
         }
 
 
-        filteredPaymentContacts = paymentContactsArray
-        Log.d("filteredPaymentContacts", "filteredPaymentContacts: " + filteredPaymentContacts)
+        recentPaymentContacts = paymentContactsArray
+        filteredPaymentContacts = arrayListOf()
+        filteredPaymentContacts.clear()
+        filteredPaymentContacts.addAll(recentPaymentContacts)
+        Log.d("filteredPaymentContacts", "filteredPaymentContacts: " + recentPaymentContacts)
         popularPaymentContacts = popularContactsArray
         Log.d("popularPaymentContacts", "popularPaymentContacts: " + popularPaymentContacts)
 
@@ -223,10 +261,24 @@ class PaymentContactsActivity : AppCompatActivity() {
         popularContactsAdapter = PopularContactsAdapter(popularPaymentContacts, phoneContactUtils, ownerAddress)
         popular_list.adapter = popularContactsAdapter
         popularContactsAdapter.notifyDataSetChanged()
-        if(!popularContactsArray.isEmpty()) {
+        if(popularPaymentContacts.isNotEmpty()) {
             popular_layout.visibility = View.VISIBLE
         }
     }
+
+    private fun updateList(filteredContactsList: ArrayList<Contact>) {
+        Log.d("updateList: ", "contacts: " + filteredContactsList)
+
+        filteredPaymentContacts.clear()
+        filteredPaymentContacts.addAll(filteredContactsList)
+        recentContactsAdapter.notifyDataSetChanged()
+        if(filteredPaymentContacts.isEmpty()) {
+            recent_list.visibility = View.GONE
+        } else {
+            recent_list.visibility = View.VISIBLE
+        }
+    }
+
 
     fun addContact(address: String): Contact {
         val paymentContact = Contact()
