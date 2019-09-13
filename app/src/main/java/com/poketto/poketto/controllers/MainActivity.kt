@@ -31,8 +31,11 @@ import com.poketto.poketto.R
 import com.poketto.poketto.data.ContactsDAO
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_payment_details.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private var transactionsList = ArrayList<Transaction>()
     private var contactsDAO : ContactsDAO? = null
     private lateinit var ownerAddress : String
+    private val weiToDaiRate = 1000000000000000000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -304,11 +308,26 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         val serializedTransactions = getSerializedTransactionsWithContactInfo(transactions.result, address)
+                        val reverseSerializedTransactions = serializedTransactions.reversed()
+
+                        var spentToday = 0F
+                        for(transaction in reverseSerializedTransactions) {
+                            if(transaction.from!!.toUpperCase() == ownerAddress.toUpperCase()) {
+                                val transactionTime = Calendar.getInstance()
+                                transactionTime.timeInMillis = transaction.timeStamp!!.toLong()*1000
+                                val now = Calendar.getInstance()
+                                if (now.get(Calendar.DATE) == transactionTime.get(Calendar.DATE)) {
+                                    spentToday += transaction.value!!.toFloat()
+                                }
+                            }
+                        }
 
                         runOnUiThread {
+                            val formattedDaiString = String.format("%.2f", spentToday / weiToDaiRate)
+                            spent_today_value!!.text = formattedDaiString
                             transactionsList.clear()
-                            transactionsList.addAll(serializedTransactions.reversed())
-                            adapter.notifyItemInserted(serializedTransactions.size)
+                            transactionsList.addAll(reverseSerializedTransactions)
+                            adapter.notifyItemInserted(reverseSerializedTransactions.size)
                             adapter.notifyDataSetChanged()
                             swipe_refresh.isRefreshing = false
                         }
