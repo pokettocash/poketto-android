@@ -42,7 +42,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginStart="10dp"
                 android:maxWidth="80dp"
-                android:ellipsize="middle"
+                android:ellipsize="end"
                 android:singleLine="true"
                 android:textStyle="normal"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -50,7 +50,6 @@
                 android:textColor="#707070"/>
 
     </LinearLayout>
-
 
     <TextView
             android:id="@+id/amount"

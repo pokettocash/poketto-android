@@ -59,10 +59,10 @@ class RecyclerAdapter(private val transactions: ArrayList<Transaction>, private 
             val formattedDaiString = String.format("%.2f", transaction.value!!.toDouble()/weiToDaiRate)
 
             if(transaction.from == ownerAddress) {
-                view.address.text = transaction.to
+                view.address.text = "${transaction.to!!.take(6)}..."
                 view.amount.text = "$formattedDaiString"
             } else {
-                view.address.text = transaction.from
+                view.address.text = "${transaction.from!!.take(6)}..."
                 view.amount.text = "+ $formattedDaiString"
                 view.amount.setTextColor(ContextCompat.getColor(itemView.context, R.color.colorAccent))
             }
