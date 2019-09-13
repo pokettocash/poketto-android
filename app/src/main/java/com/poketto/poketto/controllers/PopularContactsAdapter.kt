@@ -56,7 +56,11 @@ class PopularContactsAdapter(private val contacts: ArrayList<Contact>, private v
             this.contact = contact
             this.ownerAddress = ownerAddress
 
-            view.contact.text = contact.name
+            if(contact.name == contact.address) {
+                view.contact.text = "${contact.name!!.take(6)}..."
+            } else {
+                view.contact.text = contact.name
+            }
 
             if(contact.contact_id != null) {
                 val contactImageUri = phoneContactUtils.getPhotoUri(contact.contact_id!!.toLong())
