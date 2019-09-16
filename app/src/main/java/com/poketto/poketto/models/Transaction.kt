@@ -1,5 +1,7 @@
 package com.poketto.poketto.models
 
+import java.util.*
+
 class Transaction {
 
     val transactionIndex : String? = null
@@ -22,4 +24,5 @@ class Transaction {
     val blockNumber : String? = null
     var displayName : String? = null
     var displayImage : String? = null
+    var dayDate: Calendar? = null
 }

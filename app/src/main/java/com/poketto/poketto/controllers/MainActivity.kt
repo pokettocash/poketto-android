@@ -31,11 +31,11 @@ import com.poketto.poketto.R
 import com.poketto.poketto.data.ContactsDAO
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_payment_details.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,10 +44,15 @@ class MainActivity : AppCompatActivity() {
     val IMPORT_SEED = 101
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerAdapter
+    //    private lateinit var sectionAdapter: SectionedRecyclerViewAdapter
     private var transactionsList = ArrayList<Transaction>()
     private var contactsDAO : ContactsDAO? = null
     private lateinit var ownerAddress : String
     private val weiToDaiRate = 1000000000000000000
+
+    private val groupedTransactions = HashMap<Date, ArrayList<Transaction>>()
+    private val cal = Calendar.getInstance()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,6 +168,12 @@ class MainActivity : AppCompatActivity() {
                 adapter = RecyclerAdapter(transactionsList, ownerAddress)
                 recyclerView.adapter = adapter
                 adapter.notifyDataSetChanged()
+
+//                sectionAdapter = SectionedRecyclerViewAdapter()
+//                val section = DashboardSection("test", arrayListOf(), ownerAddress)
+//                sectionAdapter.addSection("0", section)
+//                recyclerView.adapter = sectionAdapter
+//                sectionAdapter.notifyDataSetChanged()
 
 
                 val formattedDaiString = String.format("%.2f", dai)
@@ -297,50 +308,79 @@ class MainActivity : AppCompatActivity() {
 
         val call = RetrofitInitializer().explorer().transactions("account", "txlist", address)
         call.enqueue(object: Callback<Transactions?> {
-                override fun onResponse(call: Call<Transactions?>?,
-                                        response: Response<Transactions?>?) {
-                    response?.body()?.let {
-                        val transactions: Transactions = it
-                        Log.d("onResponse", "transactions: " + transactions.result)
-                        launching_view.visibility = View.INVISIBLE
-                        if(transactions.result.isEmpty()) {
-                            empty_state_view.visibility = View.VISIBLE
-                        }
+            override fun onResponse(call: Call<Transactions?>?,
+                                    response: Response<Transactions?>?) {
+                response?.body()?.let {
+                    val transactions: Transactions = it
+                    Log.d("onResponse", "transactions: " + transactions.result)
+                    launching_view.visibility = View.INVISIBLE
+                    if(transactions.result.isEmpty()) {
+                        empty_state_view.visibility = View.VISIBLE
+                    }
 
-                        val serializedTransactions = getSerializedTransactionsWithContactInfo(transactions.result, address)
-                        val reverseSerializedTransactions = serializedTransactions.reversed()
+                    val serializedTransactions = getSerializedTransactionsWithContactInfo(transactions.result, address)
+                    val reverseSerializedTransactions = serializedTransactions.reversed()
+                    val groupedTransactions = getGroupedTransactions(reverseSerializedTransactions)
+                    Log.d("onResponse", "groupedTransactions: " + groupedTransactions.size)
 
-                        var spentToday = 0F
-                        for(transaction in reverseSerializedTransactions) {
-                            if(transaction.from!!.toUpperCase() == ownerAddress.toUpperCase()) {
-                                val transactionTime = Calendar.getInstance()
-                                transactionTime.timeInMillis = transaction.timeStamp!!.toLong()*1000
-                                val now = Calendar.getInstance()
-                                if (now.get(Calendar.DATE) == transactionTime.get(Calendar.DATE)) {
-                                    spentToday += transaction.value!!.toFloat()
-                                }
+
+                    var spentToday = 0F
+                    for(transaction in reverseSerializedTransactions) {
+                        if(transaction.from!!.toUpperCase() == ownerAddress.toUpperCase()) {
+                            val transactionTime = Calendar.getInstance()
+                            transactionTime.timeInMillis = transaction.timeStamp!!.toLong()*1000
+                            val now = Calendar.getInstance()
+                            if (now.get(Calendar.DATE) == transactionTime.get(Calendar.DATE)) {
+                                spentToday += transaction.value!!.toFloat()
                             }
                         }
+                    }
 
-                        runOnUiThread {
-                            val formattedDaiString = String.format("%.2f", spentToday / weiToDaiRate)
-                            spent_today_value!!.text = formattedDaiString
-                            transactionsList.clear()
-                            transactionsList.addAll(reverseSerializedTransactions)
-                            adapter.notifyItemInserted(reverseSerializedTransactions.size)
-                            adapter.notifyDataSetChanged()
-                            swipe_refresh.isRefreshing = false
-                        }
+
+                    runOnUiThread {
+                        val formattedDaiString = String.format("%.2f", spentToday / weiToDaiRate)
+                        spent_today_value!!.text = formattedDaiString
+                        transactionsList.clear()
+                        transactionsList.addAll(reverseSerializedTransactions)
+                        adapter.notifyItemInserted(reverseSerializedTransactions.size)
+                        adapter.notifyDataSetChanged()
+//                            sectionAdapter.notifyItemInsertedInSection("0", reverseSerializedTransactions.size)
+//                            sectionAdapter.notifyDataSetChanged()
+                        swipe_refresh.isRefreshing = false
                     }
                 }
-
-                override fun onFailure(call: Call<Transactions?>?,
-                                       t: Throwable?) {
-                    Log.d("onFailure", "transactions: " + t?.localizedMessage)
-                    launching_view.visibility = View.INVISIBLE
-                }
             }
+
+            override fun onFailure(call: Call<Transactions?>?,
+                                   t: Throwable?) {
+                Log.d("onFailure", "transactions: " + t?.localizedMessage)
+                launching_view.visibility = View.INVISIBLE
+            }
+        }
         )
+    }
+
+    private fun getGroupedTransactions(transactions: List<Transaction> ): HashMap<Date, ArrayList<Transaction>>  {
+
+        groupedTransactions.clear()
+
+        for(transaction in transactions) {
+
+            cal.timeInMillis = transaction.timeStamp!!.toLong()*1000
+            cal.set(Calendar.HOUR_OF_DAY, 0)
+            cal.set(Calendar.MINUTE, 0)
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+
+            if (!groupedTransactions.containsKey(cal.time)) {
+                groupedTransactions[cal.time] = arrayListOf()
+            }
+            val list = groupedTransactions[cal.time]
+            list!!.add(transaction)
+            groupedTransactions[cal.time] = list
+        }
+
+        return groupedTransactions
     }
 
     fun getSerializedTransactionsWithContactInfo(transactions: List<Transaction>, ownerAddress: String): ArrayList<Transaction> {
@@ -349,7 +389,7 @@ class MainActivity : AppCompatActivity() {
 
         for(transaction in transactions) {
             var othersAddress = transaction.to
-            if(transaction.to!!.toUpperCase() == ownerAddress!!.toUpperCase()) {
+            if(transaction.to!!.toUpperCase() == ownerAddress.toUpperCase()) {
                 othersAddress = transaction.from!!.toUpperCase()
             }
 
@@ -360,6 +400,7 @@ class MainActivity : AppCompatActivity() {
                     transaction.displayImage = contact.avatar_url
                 }
             }
+
             serializedTransactions.add(transaction)
         }
 
