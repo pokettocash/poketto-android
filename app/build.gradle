@@ -52,4 +52,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.github.qiujayen:sticky-layoutmanager:1.0.1'
 }

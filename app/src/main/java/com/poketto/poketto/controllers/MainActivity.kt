@@ -26,6 +26,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.widget.*
 import com.google.gson.Gson
+import com.jay.widget.StickyHeadersLinearLayoutManager
 import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
 import com.poketto.poketto.data.ContactsDAO
@@ -42,15 +43,15 @@ class MainActivity : AppCompatActivity() {
 
     private var balanceTextView: TextView? = null
     val IMPORT_SEED = 101
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var linearLayoutManager: StickyHeadersLinearLayoutManager<RecyclerAdapter>
     private lateinit var adapter: RecyclerAdapter
     //    private lateinit var sectionAdapter: SectionedRecyclerViewAdapter
     private var transactionsList = ArrayList<Transaction>()
+    private var dashboardTransactionsList = ArrayList<DashboardTransactionViewModel>()
     private var contactsDAO : ContactsDAO? = null
     private lateinit var ownerAddress : String
     private val weiToDaiRate = 1000000000000000000
 
-    private val groupedTransactions = HashMap<Date, ArrayList<Transaction>>()
     private val cal = Calendar.getInstance()
 
 
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         contactsDAO = ContactsDAO(this)
 
-        linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager = StickyHeadersLinearLayoutManager(this)
         recyclerView.layoutManager = linearLayoutManager
 
         val requestButton = findViewById<View>(R.id.request_btn) as Button
@@ -162,24 +163,22 @@ class MainActivity : AppCompatActivity() {
             uiThread {
 
                 val serializedTransactions = getSerializedTransactionsWithContactInfo(transactionsList, ownerAddress)
+                val reverseSerializedTransactions = serializedTransactions.reversed()
+                val groupedTransactions = getGroupedTransactions(reverseSerializedTransactions)
+                val transactionsViewModels = buildTransactionsViewModels(groupedTransactions)
                 transactionsList.clear()
-                transactionsList.addAll(serializedTransactions.reversed())
+                transactionsList.addAll(reverseSerializedTransactions)
 
-                adapter = RecyclerAdapter(transactionsList, ownerAddress)
+                dashboardTransactionsList.clear()
+                dashboardTransactionsList.addAll(transactionsViewModels)
+
+                adapter = RecyclerAdapter(dashboardTransactionsList, ownerAddress)
                 recyclerView.adapter = adapter
                 adapter.notifyDataSetChanged()
-
-//                sectionAdapter = SectionedRecyclerViewAdapter()
-//                val section = DashboardSection("test", arrayListOf(), ownerAddress)
-//                sectionAdapter.addSection("0", section)
-//                recyclerView.adapter = sectionAdapter
-//                sectionAdapter.notifyDataSetChanged()
-
 
                 val formattedDaiString = String.format("%.2f", dai)
                 balanceTextView!!.text = "$formattedDaiString xDai"
 
-                Log.d("transactionsFrom", "transactionsFrom")
                 transactionsFrom(ownerAddress)
             }
         }
@@ -321,7 +320,7 @@ class MainActivity : AppCompatActivity() {
                     val serializedTransactions = getSerializedTransactionsWithContactInfo(transactions.result, address)
                     val reverseSerializedTransactions = serializedTransactions.reversed()
                     val groupedTransactions = getGroupedTransactions(reverseSerializedTransactions)
-                    Log.d("onResponse", "groupedTransactions: " + groupedTransactions.size)
+                    val transactionsViewModels = buildTransactionsViewModels(groupedTransactions)
 
 
                     var spentToday = 0F
@@ -342,10 +341,12 @@ class MainActivity : AppCompatActivity() {
                         spent_today_value!!.text = formattedDaiString
                         transactionsList.clear()
                         transactionsList.addAll(reverseSerializedTransactions)
-                        adapter.notifyItemInserted(reverseSerializedTransactions.size)
+
+                        dashboardTransactionsList.clear()
+                        dashboardTransactionsList.addAll(transactionsViewModels)
+
+                        adapter.notifyItemInserted(dashboardTransactionsList.size)
                         adapter.notifyDataSetChanged()
-//                            sectionAdapter.notifyItemInsertedInSection("0", reverseSerializedTransactions.size)
-//                            sectionAdapter.notifyDataSetChanged()
                         swipe_refresh.isRefreshing = false
                     }
                 }
@@ -362,7 +363,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getGroupedTransactions(transactions: List<Transaction> ): HashMap<Date, ArrayList<Transaction>>  {
 
-        groupedTransactions.clear()
+        val groupedTransactions = HashMap<Date, ArrayList<Transaction>>()
 
         for(transaction in transactions) {
 
@@ -376,11 +377,39 @@ class MainActivity : AppCompatActivity() {
                 groupedTransactions[cal.time] = arrayListOf()
             }
             val list = groupedTransactions[cal.time]
-            list!!.add(transaction)
+            if(list!!.isEmpty()) {
+                list.add(0, transaction)
+            } else {
+                list.add(list.lastIndex, transaction)
+            }
             groupedTransactions[cal.time] = list
         }
 
         return groupedTransactions
+    }
+
+    private fun buildTransactionsViewModels(groupedTransactions: HashMap<Date, ArrayList<Transaction>>): ArrayList<DashboardTransactionViewModel> {
+        val keys = groupedTransactions.keys
+        val transactionsViewModels = arrayListOf<DashboardTransactionViewModel>()
+        if(keys.size > 0) {
+            for(key in keys.sortedByDescending { it.time }) {
+                val date = key
+                val transactionViewModel = DashboardTransactionViewModel()
+                transactionViewModel.date = date
+                transactionViewModel.transaction = null
+                transactionsViewModels.add(transactionViewModel)
+                val transactions = groupedTransactions[key]
+                for(transaction in transactions!!) {
+                    val newTransactionViewModel = DashboardTransactionViewModel()
+                    newTransactionViewModel.transaction = transaction
+                    newTransactionViewModel.date = null
+                    transactionsViewModels.add(newTransactionViewModel)
+                }
+            }
+            return transactionsViewModels
+        } else {
+            return arrayListOf()
+        }
     }
 
     fun getSerializedTransactionsWithContactInfo(transactions: List<Transaction>, ownerAddress: String): ArrayList<Transaction> {
