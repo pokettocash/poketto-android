@@ -13,14 +13,13 @@ import com.poketto.poketto.services.Wallet
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import com.google.gson.Gson
-import com.poketto.poketto.R
 import com.poketto.poketto.data.Contact
-import com.poketto.poketto.models.Transaction
-import kotlinx.android.synthetic.main.activity_payment_details.*
 import kotlinx.android.synthetic.main.activity_payment_details.address_text_view
 import kotlinx.android.synthetic.main.activity_payment_details.name_text_view
 import kotlinx.android.synthetic.main.activity_payment_details.receiver_image
 import kotlinx.android.synthetic.main.activity_payment_send.*
+import android.widget.EditText
+
 
 
 class PaymentSendActivity : AppCompatActivity() {
@@ -33,9 +32,9 @@ class PaymentSendActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_payment_send)
+        setContentView(com.poketto.poketto.R.layout.activity_payment_send)
 
-        val toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<android.support.v7.widget.Toolbar>(com.poketto.poketto.R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(true)
         supportActionBar!!.title = "Send Payment"
@@ -50,7 +49,7 @@ class PaymentSendActivity : AppCompatActivity() {
             finish()
         }
 
-        amountEditText = findViewById(R.id.amount_edit_text)
+        amountEditText = findViewById(com.poketto.poketto.R.id.amount_edit_text)
 
         mAddress = intent.getStringExtra("address")
         val contactJson = intent.getStringExtra("contact")
@@ -59,12 +58,12 @@ class PaymentSendActivity : AppCompatActivity() {
         address_text_view_unknown.text = mAddress
         address_text_view.text = mAddress
 
-        val sendButton = findViewById<Button>(R.id.send_button)
+        val sendButton = findViewById<Button>(com.poketto.poketto.R.id.send_button)
         sendButton!!.setOnClickListener {
             sendTransaction()
         }
 
-        val maxButton = findViewById<Button>(R.id.send_max_button)
+        val maxButton = findViewById<Button>(com.poketto.poketto.R.id.send_max_button)
         maxButton!!.setOnClickListener {
             val transactionCost = 0.000021F
             val maxAmount = String.format("%f", balance-transactionCost)
@@ -85,7 +84,7 @@ class PaymentSendActivity : AppCompatActivity() {
         if(mContact != null) {
             receiver_image.setImageURI(Uri.parse(mContact!!.avatar_url))
         } else {
-            receiver_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.pay_unknown))
+            receiver_image.setImageDrawable(ContextCompat.getDrawable(this, com.poketto.poketto.R.drawable.pay_unknown))
         }
 
     }
@@ -117,7 +116,8 @@ class PaymentSendActivity : AppCompatActivity() {
 
         doAsync {
 
-            Wallet(this@PaymentSendActivity).send(mAddress, amountEditText!!.text.toString(), success = {
+            val amountValue = amountEditText!!.text.toString().replace(",", ".")
+            Wallet(this@PaymentSendActivity).send(mAddress, amountValue, success = {
 
                 val transactionReceipt = it
 
