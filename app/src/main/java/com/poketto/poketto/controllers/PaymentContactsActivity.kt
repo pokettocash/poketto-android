@@ -16,12 +16,12 @@ import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import com.google.gson.Gson
+import com.poketto.poketto.adapters.PopularContactsAdapter
+import com.poketto.poketto.adapters.RecentContactsAdapter
 import com.poketto.poketto.data.Contact
 import com.poketto.poketto.data.ContactsDAO
-import com.poketto.poketto.models.ContactModel
 import com.poketto.poketto.models.Transactions
 import com.poketto.poketto.utils.PhoneContactUtils
-import kotlinx.android.synthetic.main.activity_contacts.*
 import kotlinx.android.synthetic.main.activity_payment_contacts.searchBar
 
 const val CAMERA_PERMISSION = 1001
@@ -254,11 +254,13 @@ class PaymentContactsActivity : AppCompatActivity() {
         popularPaymentContacts = popularContactsArray
         Log.d("popularPaymentContacts", "popularPaymentContacts: " + popularPaymentContacts)
 
-        recentContactsAdapter = RecentContactsAdapter(filteredPaymentContacts, phoneContactUtils, ownerAddress)
+        recentContactsAdapter =
+            RecentContactsAdapter(filteredPaymentContacts, phoneContactUtils, ownerAddress)
         recent_list.adapter = recentContactsAdapter
         recentContactsAdapter.notifyDataSetChanged()
 
-        popularContactsAdapter = PopularContactsAdapter(popularPaymentContacts, phoneContactUtils, ownerAddress)
+        popularContactsAdapter =
+            PopularContactsAdapter(popularPaymentContacts, phoneContactUtils, ownerAddress)
         popular_list.adapter = popularContactsAdapter
         popularContactsAdapter.notifyDataSetChanged()
         if(popularPaymentContacts.isNotEmpty()) {

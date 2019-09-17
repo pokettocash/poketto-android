@@ -1,4 +1,4 @@
-package com.poketto.poketto.controllers
+package com.poketto.poketto.adapters
 
 import android.content.Intent
 import android.support.v4.content.ContextCompat
@@ -12,6 +12,9 @@ import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 import android.net.Uri
 import android.text.format.DateFormat
 import com.jay.widget.StickyHeaders
+import com.poketto.poketto.models.DashboardTransactionViewModel
+import com.poketto.poketto.controllers.PaymentDetailsActivity
+import com.poketto.poketto.controllers.inflate
 import kotlinx.android.synthetic.main.recyclerview_header_row.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -32,7 +35,7 @@ class RecyclerAdapter(private val transactions: ArrayList<DashboardTransactionVi
 
     override fun getItemCount() = transactions.size
 
-    override fun onBindViewHolder(holder: RecyclerAdapter.TransactionHolder, position: Int) {
+    override fun onBindViewHolder(holder: TransactionHolder, position: Int) {
         val itemTransaction = transactions[position]
         if(itemTransaction.date != null) {
             holder.bindTransaction(null, ownerAddress, itemTransaction.date)
@@ -48,7 +51,7 @@ class RecyclerAdapter(private val transactions: ArrayList<DashboardTransactionVi
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.TransactionHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionHolder {
         if(viewType == LAYOUT_HEADER) {
             val inflatedView = parent.inflate(com.poketto.poketto.R.layout.recyclerview_header_row, false)
             return TransactionHolder(inflatedView)

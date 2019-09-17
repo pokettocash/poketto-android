@@ -1,4 +1,4 @@
-package com.poketto.poketto.controllers
+package com.poketto.poketto.adapters
 
 import android.content.Intent
 import android.support.v4.content.ContextCompat
@@ -8,13 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.gson.Gson
 import com.poketto.poketto.R
+import com.poketto.poketto.controllers.PaymentDetailsActivity
+import com.poketto.poketto.controllers.inflate
 import com.poketto.poketto.data.Contact
 import com.poketto.poketto.utils.PhoneContactUtils
 import kotlinx.android.synthetic.main.recent_contact_item_row.view.*
 
 
-class RecentContactsAdapter(private val contacts: ArrayList<Contact>, private val phoneContactUtils : PhoneContactUtils,
-                            private val ownerAddress: String): RecyclerView.Adapter<RecentContactsAdapter.ContactHolder>() {
+class PopularContactsAdapter(private val contacts: ArrayList<Contact>, private val phoneContactUtils : PhoneContactUtils,
+                            private val ownerAddress: String): RecyclerView.Adapter<PopularContactsAdapter.ContactHolder>() {
 
     override fun getItemCount() = contacts.size
 
@@ -24,7 +26,7 @@ class RecentContactsAdapter(private val contacts: ArrayList<Contact>, private va
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactHolder {
-        val inflatedView = parent.inflate(R.layout.recent_contact_item_row, false)
+        val inflatedView = parent.inflate(R.layout.popular_contact_item_row, false)
         return ContactHolder(inflatedView)
     }
 
@@ -56,7 +58,11 @@ class RecentContactsAdapter(private val contacts: ArrayList<Contact>, private va
             this.contact = contact
             this.ownerAddress = ownerAddress
 
-            view.contact.text = contact.name
+            if(contact.name == contact.address) {
+                view.contact.text = "${contact.name!!.take(6)}..."
+            } else {
+                view.contact.text = contact.name
+            }
 
             if(contact.contact_id != null) {
                 val contactImageUri = phoneContactUtils.getPhotoUri(contact.contact_id!!.toLong())

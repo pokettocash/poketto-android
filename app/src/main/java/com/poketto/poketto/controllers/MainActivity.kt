@@ -22,14 +22,15 @@ import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.widget.*
 import com.google.gson.Gson
 import com.jay.widget.StickyHeadersLinearLayoutManager
 import net.glxn.qrgen.android.QRCode
 import com.poketto.poketto.R
+import com.poketto.poketto.adapters.RecyclerAdapter
 import com.poketto.poketto.data.ContactsDAO
+import com.poketto.poketto.models.DashboardTransactionViewModel
 import com.poketto.poketto.models.Transaction
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync

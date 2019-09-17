@@ -1,4 +1,4 @@
-package com.poketto.poketto.controllers
+package com.poketto.poketto.models
 
 import com.poketto.poketto.models.Transaction
 import java.util.*
