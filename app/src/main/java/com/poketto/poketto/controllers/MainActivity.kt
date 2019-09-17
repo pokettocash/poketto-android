@@ -190,6 +190,10 @@ class MainActivity : AppCompatActivity() {
         val dialog = Dialog(this@MainActivity)
         dialog.setContentView(R.layout.request_modal)
         dialog.setTitle("")
+        dialog.setOnDismissListener {
+            Log.d("dismiss request", "dismiss request")
+            updateWallet()
+        }
 
 //        val dialogButton = dialog.findViewById(R.id.dialogButtonOK) as Button
 //        dialogButton.setOnClickListener {
@@ -316,6 +320,8 @@ class MainActivity : AppCompatActivity() {
                     launching_view.visibility = View.INVISIBLE
                     if(transactions.result.isEmpty()) {
                         empty_state_view.visibility = View.VISIBLE
+                    } else {
+                        empty_state_view.visibility = View.INVISIBLE
                     }
 
                     val serializedTransactions = getSerializedTransactionsWithContactInfo(transactions.result, address)
