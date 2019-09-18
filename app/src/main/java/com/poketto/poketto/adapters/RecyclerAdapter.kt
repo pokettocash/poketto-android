@@ -116,13 +116,14 @@ class RecyclerAdapter(private val transactions: ArrayList<DashboardTransactionVi
                 if(transaction.from == ownerAddress) {
                     view.address.text = "${transaction!!.to!!.take(6)}..."
                     view.amount.text = "$formattedDaiString"
+                    view.amount.setTextColor(ContextCompat.getColor(itemView.context, com.poketto.poketto.R.color.colorPrimaryDark))
                 } else {
                     view.address.text = "${transaction!!.from!!.take(6)}..."
                     view.amount.text = "+ $formattedDaiString"
                     view.amount.setTextColor(ContextCompat.getColor(itemView.context, com.poketto.poketto.R.color.colorAccent))
                 }
 
-                if(transaction!!.displayName != null) {
+                if(transaction.displayName != null) {
                     view.contact.text = transaction.displayName
                     view.address.text = ""
                 }

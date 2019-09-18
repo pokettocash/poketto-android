@@ -155,23 +155,12 @@ class MainActivity : AppCompatActivity() {
 
         doAsync {
             ownerAddress = Wallet(this@MainActivity).getAddress()!!
-
-
+            
             Log.d("updateWallet", "address: " + ownerAddress)
             val dai = Wallet(this@MainActivity).balanceFrom(ownerAddress)
             Log.d("balance", "dai balance: " + dai)
 
             uiThread {
-
-                val serializedTransactions = getSerializedTransactionsWithContactInfo(transactionsList, ownerAddress)
-                val reverseSerializedTransactions = serializedTransactions.reversed()
-                val groupedTransactions = getGroupedTransactions(reverseSerializedTransactions)
-                val transactionsViewModels = buildTransactionsViewModels(groupedTransactions)
-                transactionsList.clear()
-                transactionsList.addAll(reverseSerializedTransactions)
-
-                dashboardTransactionsList.clear()
-                dashboardTransactionsList.addAll(transactionsViewModels)
 
                 adapter = RecyclerAdapter(dashboardTransactionsList, ownerAddress)
                 recyclerView.adapter = adapter
@@ -341,11 +330,12 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    val formattedDaiString = String.format("%.2f", spentToday / weiToDaiRate)
+                    spent_today_value!!.text = formattedDaiString
 
 
                     runOnUiThread {
-                        val formattedDaiString = String.format("%.2f", spentToday / weiToDaiRate)
-                        spent_today_value!!.text = formattedDaiString
+
                         transactionsList.clear()
                         transactionsList.addAll(reverseSerializedTransactions)
 
