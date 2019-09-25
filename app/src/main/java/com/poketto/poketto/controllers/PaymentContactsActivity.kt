@@ -95,6 +95,9 @@ class PaymentContactsActivity : AppCompatActivity() {
             }
         })
 
+        searchBar.setOnClickListener {
+            searchBar.isIconified = false
+        }
 
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
 

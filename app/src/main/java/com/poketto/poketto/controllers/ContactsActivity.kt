@@ -11,12 +11,10 @@ import android.view.ViewGroup
 import com.makeramen.roundedimageview.RoundedImageView
 import com.poketto.poketto.models.ContactModel
 import com.poketto.poketto.utils.PhoneContactUtils
-import kotlinx.android.synthetic.main.activity_contacts.*
 import android.widget.*
-import org.bouncycastle.asn1.x500.style.RFC4519Style.l
-import android.widget.Toast
 import com.poketto.poketto.data.Contact
 import com.poketto.poketto.data.ContactsDAO
+import kotlinx.android.synthetic.main.activity_contacts.searchBar
 
 
 class ContactsActivity: AppCompatActivity() {
@@ -119,6 +117,9 @@ class ContactsActivity: AppCompatActivity() {
             }
         })
 
+        searchBar.setOnClickListener {
+            searchBar.isIconified = false
+        }
     }
 
     private fun updateList(filteredContactsList: ArrayList<ContactModel>) {
