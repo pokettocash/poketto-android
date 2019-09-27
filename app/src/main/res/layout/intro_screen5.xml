@@ -9,7 +9,7 @@
             android:layout_height="280dp"
             android:layout_centerHorizontal="true"
             android:id="@+id/imageView"
-            android:src="@mipmap/onboarding2"/>
+            android:src="@mipmap/onboarding5"/>
 
     <TextView
             android:id="@+id/title"
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:text="@string/intro_title_2"
+            android:text="@string/intro_title_5"
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:text="@string/intro_2"
+            android:text="@string/intro_5"
             android:textColor="@android:color/black"
             android:textSize="15sp"
             android:fontFamily="sans-serif"

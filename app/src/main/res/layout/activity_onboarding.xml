@@ -35,6 +35,6 @@
             android:textAllCaps="false"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="34dp" />
+            android:layout_marginTop="10dp" />
 
 </RelativeLayout>

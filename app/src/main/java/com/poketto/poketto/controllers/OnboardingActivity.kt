@@ -24,7 +24,8 @@ class OnboardingActivity: FragmentActivity() {
         R.layout.intro_screen1,
         R.layout.intro_screen2,
         R.layout.intro_screen3,
-        R.layout.intro_screen4
+        R.layout.intro_screen4,
+        R.layout.intro_screen5
     )
     var nextButton: Button? = null
 

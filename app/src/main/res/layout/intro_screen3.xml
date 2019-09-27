@@ -9,7 +9,23 @@
             android:layout_height="280dp"
             android:layout_centerHorizontal="true"
             android:id="@+id/imageView"
-            android:src="@mipmap/onboarding_3"/>
+            android:src="@mipmap/onboarding3"/>
+
+    <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/intro_title_3"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif"
+            android:textAlignment="center"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp" />
 
     <TextView
             android:layout_width="match_parent"
@@ -21,8 +37,7 @@
             android:textSize="15sp"
             android:fontFamily="sans-serif"
             android:textAlignment="center"
-            android:layout_below="@+id/imageView"
+            android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="32dp" />
-
+            android:layout_marginTop="10dp" />
 </RelativeLayout>

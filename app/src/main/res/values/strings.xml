@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">Poketto</string>
+    <string name="intro_title_1">Your everyday wallet</string>
+    <string name="intro_title_2">Pay your friends, pronto</string>
+    <string name="intro_title_3">No volatility</string>
+    <string name="intro_title_4">Easily send and receive</string>
+    <string name="intro_title_5">Your phone is all you need</string>
     <string name="intro_1">Poketto is the simplest, most secure and near instant way to send money to friends and pay for your every day items.</string>
     <string name="intro_2">Poketto uses xDai for near instant transactions to an xDai address. Not sure what xDai is? We will try to explain.</string>
-    <string name="intro_3">xDai is an Ethereum blockchain that uses USD-stable xDai (a representation of DAI token) as the native coin of the network.</string>
-    <string name="intro_4">Your xDai wallet will be generated for you as soon as you press get started. You can also import an existing wallet on the settings.</string>
+    <string name="intro_3">xDai is a cryptocurrency that is pegged to the US Dollar, with low transaction fees, and fast transaction times.</string>
+    <string name="intro_4">These features make xDai the ideal choice to use for everyday transactions like retail stores or peer to peer transfers.</string>
+    <string name="intro_5">Your wallet will be generated as soon as you press get started. You can also import an existing wallet on the settings.</string>
     <string name="get_started">Get Started</string>
     <string name="qr_code">QR code</string>
     <string name="balance">Balance</string>
