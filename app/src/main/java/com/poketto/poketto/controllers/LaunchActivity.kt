@@ -38,6 +38,7 @@ class LaunchActivity: AppCompatActivity() {
         val editor: SharedPreferences.Editor
         val preferences = getSharedPreferences("user_pref", Context.MODE_PRIVATE)
         val firstRun = preferences.getString("FirstRun", null)
+        Log.d("firstRun", "firstRun: " + firstRun)
 
         if(firstRun == null) {
             Log.d("clearCredentials", "on first run")
