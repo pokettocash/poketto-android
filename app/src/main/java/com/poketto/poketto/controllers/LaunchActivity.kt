@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import com.poketto.poketto.R
 import com.poketto.poketto.services.Wallet
@@ -14,6 +15,7 @@ import de.adorsys.android.securestoragelibrary.SecurePreferences
 class LaunchActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.splashScreenTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
 
