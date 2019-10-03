@@ -33,7 +33,7 @@
     <string name="paste_from_clipboard">Paste from clipboard</string>
     <string name="scan_qr_code">Scan address from QR Code</string>
     <string name="no_address">No address on clipboard</string>
-    <string name="to">To:</string>
+    <string name="to">To</string>
     <string name="from">From:</string>
     <string name="xDai">xDai</string>
     <string name="send_max_balance">Send max balance</string>
@@ -56,5 +56,5 @@
     <string name="search_contacts">Search Contacts</string>
     <string name="recent">Recent</string>
     <string name="popular">Popular</string>
-
+    <string name="write_note">Write a public note</string>
 </resources>

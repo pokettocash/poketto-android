@@ -18,12 +18,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#EEEEEE"/>
+
     <LinearLayout
             android:id="@+id/to_layout"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp">
 
@@ -31,9 +37,9 @@
                 android:id="@+id/to_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_gravity="start|center_vertical"
                 android:textSize="14sp"
-                android:textColor="#000"
+                android:textColor="#737373"
                 android:textAlignment="textStart"
                 android:maxLines="1"
                 android:text="@string/to"/>
@@ -42,6 +48,9 @@
                 android:id="@+id/contact_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_gravity="center_vertical"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -94,7 +103,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:orientation="horizontal">
+                android:layout_marginEnd="30dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical">
 
             <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/receiver_image_unknown"
@@ -128,10 +139,18 @@
 
     </LinearLayout>
 
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#EEEEEE"/>
+
     <LinearLayout
             android:id="@+id/amount_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="94dp"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal"
             android:layout_marginTop="2dp"
             android:weightSum="10"
@@ -145,7 +164,7 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="start"
                 android:textSize="14sp"
-                android:textColor="#000"
+                android:textColor="#737373"
                 android:textAlignment="textStart"
                 android:maxLines="1"
                 android:text="@string/xDai"
@@ -159,6 +178,8 @@
                 android:hint="@string/amount"
                 android:background="@null"
                 android:textAlignment="center"
+                android:textSize="40sp"
+                android:textColor="#737373"
                 android:inputType="numberDecimal"
                 android:layout_gravity="center_vertical|start"
                 android:layout_weight="2"/>
@@ -170,16 +191,90 @@
 
     </LinearLayout>
 
-    <Button
-            android:id="@+id/send_max_button"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@android:color/transparent"
-            android:textColor="@android:color/black"
-            android:text="@string/send_max_balance"
-            android:textAllCaps="false"
-            android:gravity="center_vertical|center_horizontal"/>
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#EEEEEE"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+        >
+            <Button
+                    android:id="@+id/send_max_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="15dp"
+                    android:background="@android:color/transparent"
+                    android:textColor="#737373"
+                    android:text="@string/send_max_balance"
+                    android:textSize="12sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textAlignment="center"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:drawableStart="@drawable/send_max_icon"
+                    android:drawablePadding="-20dp"
+            />
+            <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:background="#EEEEEE"/>
+
+        </FrameLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_weight="1">
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_gravity="start|center_vertical"
+                    android:src="@drawable/note_icon"/>
+
+            <EditText
+                    android:id="@+id/note_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:hint="@string/write_note"
+                    android:background="@null"
+                    android:textAlignment="textStart"
+                    android:textSize="12sp"
+                    android:textColor="#737373"
+                    android:maxLines="3"
+                    android:inputType="textMultiLine"
+                    android:layout_gravity="center_vertical|start"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#EEEEEE"/>
+
 
     <Button
             android:id="@+id/send_button"

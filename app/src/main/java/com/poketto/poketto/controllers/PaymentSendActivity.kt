@@ -19,6 +19,11 @@ import kotlinx.android.synthetic.main.activity_payment_details.name_text_view
 import kotlinx.android.synthetic.main.activity_payment_details.receiver_image
 import kotlinx.android.synthetic.main.activity_payment_send.*
 import android.widget.EditText
+import android.graphics.PorterDuff
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.graphics.drawable.Drawable
+
+
 
 
 
@@ -69,6 +74,10 @@ class PaymentSendActivity : AppCompatActivity() {
             val maxAmount = String.format("%f", balance-transactionCost)
             amountEditText!!.setText(maxAmount)
             maxButton.setTextColor(Color.parseColor("#216BFE"))
+
+            val drawables = maxButton.compoundDrawables
+            val wrapDrawable = DrawableCompat.wrap(drawables[0])
+            DrawableCompat.setTint(wrapDrawable, Color.parseColor("#216BFE"))
         }
 
         if(mContact != null) {
