@@ -19,12 +19,9 @@ import kotlinx.android.synthetic.main.activity_payment_details.name_text_view
 import kotlinx.android.synthetic.main.activity_payment_details.receiver_image
 import kotlinx.android.synthetic.main.activity_payment_send.*
 import android.widget.EditText
-import android.graphics.PorterDuff
 import android.support.v4.graphics.drawable.DrawableCompat
-import android.graphics.drawable.Drawable
-
-
-
+import android.text.Editable
+import android.text.TextWatcher
 
 
 class PaymentSendActivity : AppCompatActivity() {
@@ -79,6 +76,23 @@ class PaymentSendActivity : AppCompatActivity() {
             val wrapDrawable = DrawableCompat.wrap(drawables[0])
             DrawableCompat.setTint(wrapDrawable, Color.parseColor("#216BFE"))
         }
+
+        amountEditText!!.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    val drawables = maxButton.compoundDrawables
+                    val wrapDrawable = DrawableCompat.wrap(drawables[0])
+                    DrawableCompat.setTint(wrapDrawable, Color.parseColor("#737373"))
+                    maxButton.setTextColor(Color.parseColor("#737373"))
+                }
+            }
+        })
 
         if(mContact != null) {
             contact_layout.visibility = View.VISIBLE
