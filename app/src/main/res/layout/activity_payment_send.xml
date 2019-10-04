@@ -261,6 +261,7 @@
                     android:textSize="12sp"
                     android:textColor="#737373"
                     android:maxLines="3"
+                    android:maxLength="55"
                     android:inputType="textMultiLine"
                     android:layout_gravity="center_vertical|start"/>
 

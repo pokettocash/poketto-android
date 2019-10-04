@@ -22,6 +22,7 @@ import android.widget.EditText
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 
 
 class PaymentSendActivity : AppCompatActivity() {
@@ -30,6 +31,9 @@ class PaymentSendActivity : AppCompatActivity() {
     private var mAddress: String = ""
     private var mContact: Contact? = null
     private var alertDialog: AlertDialog? = null
+    private var isMaxBalanceSelected = false
+    private var willChangeMaxAmountProgrammatically = false
+    private var balance : Double = 0F.toDouble()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +45,7 @@ class PaymentSendActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayShowTitleEnabled(true)
         supportActionBar!!.title = "Send Payment"
         val address = Wallet(this).getAddress()
-        val balance = Wallet(this).balanceFrom(address!!)
+        balance = Wallet(this).balanceFrom(address!!)
         val formattedDaiString = String.format("%.2f", balance)
         supportActionBar!!.subtitle = "Balance $formattedDaiString xDai"
 
@@ -67,14 +71,19 @@ class PaymentSendActivity : AppCompatActivity() {
 
         val maxButton = findViewById<Button>(com.poketto.poketto.R.id.send_max_button)
         maxButton!!.setOnClickListener {
-            val transactionCost = 0.000021F
-            val maxAmount = String.format("%f", balance-transactionCost)
-            amountEditText!!.setText(maxAmount)
+            var transactionCost = 0.000021F
+            if(note_edit_text.text.isNotEmpty()) {
+                transactionCost = 0.00008F
+            }
+            setMaxValueWithTransactionCost(transactionCost)
+
             maxButton.setTextColor(Color.parseColor("#216BFE"))
 
             val drawables = maxButton.compoundDrawables
             val wrapDrawable = DrawableCompat.wrap(drawables[0])
             DrawableCompat.setTint(wrapDrawable, Color.parseColor("#216BFE"))
+
+            isMaxBalanceSelected = true
         }
 
         amountEditText!!.addTextChangedListener(object : TextWatcher {
@@ -85,14 +94,41 @@ class PaymentSendActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
+
+                if (s.isNotEmpty() && !willChangeMaxAmountProgrammatically) {
                     val drawables = maxButton.compoundDrawables
                     val wrapDrawable = DrawableCompat.wrap(drawables[0])
                     DrawableCompat.setTint(wrapDrawable, Color.parseColor("#737373"))
                     maxButton.setTextColor(Color.parseColor("#737373"))
+
+                    isMaxBalanceSelected = false
+                }
+                if(willChangeMaxAmountProgrammatically) {
+                    willChangeMaxAmountProgrammatically = false
                 }
             }
         })
+
+        note_edit_text.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+
+                if(isMaxBalanceSelected) {
+                    var transactionCost = 0.000021F
+                    if (s.isNotEmpty()) {
+                        transactionCost = 0.00008F
+                    }
+                    willChangeMaxAmountProgrammatically = true
+                    setMaxValueWithTransactionCost(transactionCost)
+                }
+            }
+        })
+
 
         if(mContact != null) {
             contact_layout.visibility = View.VISIBLE
@@ -110,6 +146,16 @@ class PaymentSendActivity : AppCompatActivity() {
             receiver_image.setImageDrawable(ContextCompat.getDrawable(this, com.poketto.poketto.R.drawable.pay_unknown))
         }
 
+    }
+
+    override fun onResume() {
+
+        val address = Wallet(this).getAddress()
+        balance = Wallet(this).balanceFrom(address!!)
+        val formattedDaiString = String.format("%.2f", balance)
+        supportActionBar!!.subtitle = "Balance $formattedDaiString xDai"
+
+        super.onResume()
     }
 
     private fun showLoadingSpinner() {
@@ -131,6 +177,12 @@ class PaymentSendActivity : AppCompatActivity() {
     private fun hideLoadingSpinner() {
 
         alertDialog!!.dismiss()
+    }
+
+    private fun setMaxValueWithTransactionCost(transactionCost: Float) {
+
+        val maxAmount = String.format("%f", balance-transactionCost)
+        amountEditText!!.setText(maxAmount)
     }
 
     private fun sendTransaction() {
