@@ -14,11 +14,11 @@ import org.web3j.crypto.Bip32ECKeyPair
 import org.web3j.crypto.Bip32ECKeyPair.HARDENED_BIT
 import org.web3j.crypto.MnemonicUtils
 import org.web3j.protocol.core.methods.response.TransactionReceipt
-import org.web3j.tx.RawTransactionManager
-import org.web3j.tx.TransactionManager
-import org.web3j.tx.Transfer
 import org.web3j.utils.Convert
 import java.math.BigDecimal
+import org.web3j.crypto.TransactionEncoder
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
+import org.web3j.utils.Numeric
 
 
 class Wallet(context: Context) {
@@ -100,7 +100,7 @@ class Wallet(context: Context) {
         return Credentials.create(x)
     }
 
-    fun send(toAddress: String, value: String, success: (result: TransactionReceipt) -> Unit, failure: (result: String) -> Unit) {
+    fun send(toAddress: String, value: String, message: String?, success: (result: TransactionReceipt) -> Unit, failure: (result: String) -> Unit) {
 
         val endpoint = "https://dai.poa.network"
         val web3 = Web3j.build(HttpService(endpoint))
@@ -108,18 +108,80 @@ class Wallet(context: Context) {
 
         try {
 
-            val transactionManager : TransactionManager = RawTransactionManager(web3, credentials)
-            val transfer = Transfer(web3, transactionManager)
-            val transactionReceipt = transfer.sendFunds(toAddress, BigDecimal.valueOf(value.toDouble()), Convert.Unit.ETHER, GAS_PRICE, GAS_LIMIT).sendAsync()
+            val amountEther = BigDecimal.valueOf(value.toDouble())
+            val amountWei = Convert.toWei(amountEther, Convert.Unit.ETHER).toBigInteger()
 
-            Log.d("send", "got tx receipt: " + transactionReceipt.get())
+            var gasLimit = GAS_LIMIT
+            var extraData = ""
+            if(message != null) {
+                gasLimit = BigInteger.valueOf(80000L)
+                extraData = ASCIItoHEX(message)
+            }
 
-            success(transactionReceipt.get())
+            val ethGetTransactionCount = web3.ethGetTransactionCount(getAddress(), DefaultBlockParameterName.PENDING).send()
+            val nonce = ethGetTransactionCount.transactionCount
+
+
+            val rawTransaction = RawTransaction.createTransaction(nonce, GAS_PRICE, gasLimit, toAddress, amountWei, extraData)
+            val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
+            val hexValue = Numeric.toHexString(signedMessage)
+
+            val ethSendTransaction = web3.ethSendRawTransaction(hexValue).send()
+            val transactionHash = ethSendTransaction.transactionHash
+            var transactionReceipt : EthGetTransactionReceipt
+
+            var numberOfTries = 0
+            while (true) {
+                transactionReceipt = web3
+                    .ethGetTransactionReceipt(transactionHash)
+                    .send()
+                if (transactionReceipt.result != null) {
+                    break
+                }  else if(numberOfTries == 5) {
+                    throw Exception("Failed executing transaction. Contact our support.")
+                }
+                Thread.sleep(1000)
+                numberOfTries++
+            }
+
+            val txReceipt = transactionReceipt
+
+            success(txReceipt.result)
 
         } catch (e: Exception) {
 
+            Log.d("failed", "sending tx: " + e.toString())
+
             failure(e.localizedMessage)
         }
+    }
+
+    fun ASCIItoHEX(ascii: String): String {
+        // Initialize final String
+        var hex = ""
+
+        // Make a loop to iterate through
+        // every character of ascii string
+        for (i in 0 until ascii.length) {
+
+            // take a char from
+            // position i of string
+            val ch = ascii[i]
+
+            // cast char to integer and
+            // find its ascii value
+            val `in` = ch.toInt()
+
+            // change this ascii value
+            // integer to hexadecimal value
+            val part = Integer.toHexString(`in`)
+
+            // add this hexadecimal value
+            // to final string.
+            hex += part
+        }
+        // return the final string hex
+        return hex
     }
 
 }

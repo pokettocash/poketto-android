@@ -192,7 +192,11 @@ class PaymentSendActivity : AppCompatActivity() {
         doAsync {
 
             val amountValue = amountEditText!!.text.toString().replace(",", ".")
-            Wallet(this@PaymentSendActivity).send(mAddress, amountValue, success = {
+            var message : String? = null
+            if(note_edit_text.text.isNotEmpty()) {
+                message = note_edit_text.text.toString()
+            }
+            Wallet(this@PaymentSendActivity).send(mAddress, amountValue, message, success = {
 
                 val transactionReceipt = it
 
