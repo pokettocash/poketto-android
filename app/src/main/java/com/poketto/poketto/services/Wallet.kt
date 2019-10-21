@@ -19,6 +19,10 @@ import java.math.BigDecimal
 import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 import org.web3j.utils.Numeric
+import java.net.URLDecoder
+import android.R.string
+import java.nio.ByteBuffer
+import java.nio.charset.Charset
 
 
 class Wallet(context: Context) {
@@ -115,7 +119,7 @@ class Wallet(context: Context) {
             var extraData = ""
             if(message != null) {
                 gasLimit = BigInteger.valueOf(80000L)
-                extraData = ASCIItoHEX(message)
+                extraData = strToHex(message)
             }
 
             val ethGetTransactionCount = web3.ethGetTransactionCount(getAddress(), DefaultBlockParameterName.PENDING).send()
@@ -156,7 +160,7 @@ class Wallet(context: Context) {
         }
     }
 
-    fun ASCIItoHEX(ascii: String): String {
+    fun strToHex(ascii: String): String {
         // Initialize final String
         var hex = ""
 
@@ -182,6 +186,20 @@ class Wallet(context: Context) {
         }
         // return the final string hex
         return hex
+    }
+
+    fun hexToStr(hex: String): String {
+        val buff = ByteBuffer.allocate(hex.length / 2)
+        var i = 0
+        while (i < hex.length) {
+            buff.put(Integer.parseInt(hex.substring(i, i + 2), 16).toByte())
+            i += 2
+        }
+        buff.rewind()
+        val cs = Charset.forName("UTF-8")
+        val cb = cs.decode(buff)
+
+        return cb.toString()
     }
 
 }

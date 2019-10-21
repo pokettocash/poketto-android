@@ -5,11 +5,12 @@ import android.support.v7.app.AppCompatActivity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import com.poketto.poketto.R
 import com.poketto.poketto.services.Wallet
 import de.adorsys.android.securestoragelibrary.SecurePreferences
+import android.support.text.emoji.EmojiCompat
+import android.support.text.emoji.bundled.BundledEmojiCompatConfig
+import com.poketto.poketto.R
 
 
 class LaunchActivity: AppCompatActivity() {
@@ -18,6 +19,9 @@ class LaunchActivity: AppCompatActivity() {
         setTheme(R.style.splashScreenTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
+
+        val config = BundledEmojiCompatConfig(this)
+        EmojiCompat.init(config)
 
         clearCredentials()
 

@@ -14,6 +14,7 @@ import com.google.gson.Gson
 import com.poketto.poketto.R
 import com.poketto.poketto.data.Contact
 import com.poketto.poketto.models.Transaction
+import com.poketto.poketto.services.Wallet
 import kotlinx.android.synthetic.main.activity_payment_details.*
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 import java.text.SimpleDateFormat
@@ -85,6 +86,12 @@ class PaymentDetailsActivity: AppCompatActivity()  {
 
         val formattedDaiString = String.format("%.2f", transaction.value!!.toFloat() / weiToDaiRate)
         value!!.text = formattedDaiString
+
+        if(transaction.input != "0x") {
+            val message = Wallet(this).hexToStr(transaction.input!!.substring(2))
+            message_text_view.text = "\"${message}\""
+            message_text_view.visibility = View.VISIBLE
+        }
 
         if(transaction.from == ownerAddress) {
             address_text_view.text = transaction.to
