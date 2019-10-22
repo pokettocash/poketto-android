@@ -45,7 +45,7 @@
     <string name="add_funds_description">Learn how to add funds to your wallet</string>
     <string name="just_sent">You\'ve just sent</string>
     <string name="sent">You\'ve sent</string>
-    <string name="notes">""</string>
+    <string name="message">""</string>
     <string name="received">You\'ve received</string>
     <string name="share_payment">Share payment</string>
     <string name="send_new_payment">Send new payment</string>

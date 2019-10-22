@@ -69,7 +69,7 @@
                 android:textAlignment="center"
                 android:textSize="10sp"
                 android:textColor="#111111"
-                android:text="@string/notes"/>
+                android:text="@string/message"/>
 
         <View
                 android:id="@+id/divider"

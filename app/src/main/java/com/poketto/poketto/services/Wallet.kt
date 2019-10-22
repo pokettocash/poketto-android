@@ -21,6 +21,7 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 import org.web3j.utils.Numeric
 import java.net.URLDecoder
 import android.R.string
+import java.io.UnsupportedEncodingException
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 
@@ -160,32 +161,9 @@ class Wallet(context: Context) {
         }
     }
 
-    fun strToHex(ascii: String): String {
-        // Initialize final String
-        var hex = ""
+    fun strToHex(str: String): String {
 
-        // Make a loop to iterate through
-        // every character of ascii string
-        for (i in 0 until ascii.length) {
-
-            // take a char from
-            // position i of string
-            val ch = ascii[i]
-
-            // cast char to integer and
-            // find its ascii value
-            val `in` = ch.toInt()
-
-            // change this ascii value
-            // integer to hexadecimal value
-            val part = Integer.toHexString(`in`)
-
-            // add this hexadecimal value
-            // to final string.
-            hex += part
-        }
-        // return the final string hex
-        return hex
+        return String.format("%04x", BigInteger(1, str.toByteArray(charset("UTF8"))))
     }
 
     fun hexToStr(hex: String): String {
