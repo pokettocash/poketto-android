@@ -6,9 +6,8 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import com.google.gson.Gson
 import com.poketto.poketto.R
-import com.poketto.poketto.controllers.PaymentDetailsActivity
+import com.poketto.poketto.controllers.PaymentSendActivity
 import com.poketto.poketto.controllers.inflate
 import com.poketto.poketto.data.Contact
 import com.poketto.poketto.utils.PhoneContactUtils
@@ -44,14 +43,9 @@ class RecentContactsAdapter(private val contacts: ArrayList<Contact>, private va
         override fun onClick(v: View) {
             Log.d("Contact", "CLICK!")
             val context = itemView.context
-            val paymentDetailsIntent = Intent(context, PaymentDetailsActivity::class.java)
-            paymentDetailsIntent.putExtra(CONTACT_KEY, Gson().toJson(contact))
-            paymentDetailsIntent.putExtra("ownerAddress", ownerAddress)
-            context.startActivity(paymentDetailsIntent)
-        }
-
-        companion object {
-            private val CONTACT_KEY = "CONTACT"
+            val paymentSendIntent = Intent(context, PaymentSendActivity::class.java)
+            paymentSendIntent.putExtra("address", contact!!.address)
+            context.startActivity(paymentSendIntent)
         }
 
         fun bindContact(contact: Contact, phoneContactUtils : PhoneContactUtils, ownerAddress: String) {

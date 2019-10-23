@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_payment_success.*
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import com.google.gson.Gson
 import com.poketto.poketto.services.Wallet
@@ -27,6 +28,8 @@ class PaymentSuccessActivity : AppCompatActivity() {
 
 
         val receiptJson = intent.getStringExtra("receipt")
+        Log.d("receiptJson", receiptJson)
+
         val receipt = Gson().fromJson(receiptJson, TransactionReceipt::class.java)
 
         val endpoint = "https://dai.poa.network"
