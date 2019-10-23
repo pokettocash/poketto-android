@@ -140,7 +140,7 @@ class Wallet(context: Context) {
                 transactionReceipt = web3
                     .ethGetTransactionReceipt(transactionHash)
                     .send()
-                if (transactionReceipt.result != null) {
+                if (transactionReceipt.result != null && transactionReceipt.result.blockHash != null) {
                     break
                 }  else if(numberOfTries == 5) {
                     throw Exception("Failed executing transaction. Contact our support.")
