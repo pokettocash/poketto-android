@@ -83,7 +83,13 @@ class MainActivity : AppCompatActivity() {
             showRequestModal()
         }
 
-        add_funds_button.setOnClickListener {
+        buy_xDai_button.setOnClickListener {
+            val url = "https://buy.carbon.money/?apiKey=9899fb8c-837b-41a5-a8bd-3094b7def049&tokens=xDai&homeScreenMessage=Poketto&receiveAddressxDai=${ownerAddress}"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        }
+
+        exchange_dai_button.setOnClickListener {
             val url = "https://medium.com/@jaredstauffer/how-to-get-xdai-how-to-convert-dai-to-xdai-eth-dai-xdai-30a60e4b6641"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
