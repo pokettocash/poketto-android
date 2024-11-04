@@ -2,6 +2,8 @@
 
 ![Design](https://repository-images.githubusercontent.com/191986354/943acc00-ebb5-11e9-9b5c-7a0ddc9ccdca)
 
+### [This app has been discontinued!]
+
 Our goal with Poketto is to make it easy to send money to friends and pay for every day items.
 It's your pocket wallet inside your phone with secure and near instant transactions.
 
